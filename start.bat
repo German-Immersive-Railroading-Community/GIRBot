@@ -4,6 +4,6 @@ title GIRBot
 :1
 cls
 py -3 bot.py
-pause
+timeout 10
 .\start.bat
 exit
