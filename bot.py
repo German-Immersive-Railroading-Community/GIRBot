@@ -14,10 +14,10 @@ client = discord.Client()
 data = {}
 data['Builders'] = {}
 try: 
-    with open('tasks.json') as json_file:
+    with open('GIRBot.json') as json_file:
         data = json.load(json_file)
 except:
-    print('JSON File (tasks.json) corrupted!')
+    print('JSON File (GIRBot.json) corrupted!')
     print('------------------------------------')
 
 
@@ -48,7 +48,7 @@ async def on_message(message):
     if message.content.startswith('$abc'):
         channel = message.channel
         await channel.send('Du kannst den Anfang des ABCs!')
-# Hier beginnt das Aufgaben erstellen; der Builder (Builder) und die Aufgabe (Aufgabe) wird herraus gefiltert, gespeichert und als Nachricht ausgegeben
+#Hier beginnt das Aufgaben erstellen; der Builder (Builder) und die Aufgabe (Aufgabe) wird herraus gefiltert, gespeichert und als Nachricht ausgegeben
     if message.content.startswith('$task add'):
         channel = message.channel
         Inhalt = message.content
@@ -59,7 +59,7 @@ async def on_message(message):
         if not str(Builder) in data['Builders']:
             data['Builders'][str(Builder)] = []
         data['Builders'][str(Builder)].append(Aufgabe)
-        with open('tasks.json', 'w', encoding='utf8') as outfile:
+        with open('GIRBot.json', 'w', encoding='utf8') as outfile:
             json.dump(data, outfile)
         await channel.send("Die neue Aufgabe von" + " " + guild.get_member(Builder).name + " " + "ist" + " " + Aufgabe)
 #Auslesen der Aufgaben
@@ -82,7 +82,7 @@ async def on_message(message):
             if taskID < len(data['Builders'][Builder]):
                 deletedTask = data['Builders'][Builder][taskID]
                 del data['Builders'][Builder][taskID]
-                with open('tasks.json', 'w', encoding='utf8') as outfile:
+                with open('GIRBot.json', 'w', encoding='utf8') as outfile:
                     json.dump(data, outfile)
                 await channel.send("Die Aufgabe " + deletedTask + " wurde gelöscht")
             else:
