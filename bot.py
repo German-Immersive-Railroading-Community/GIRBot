@@ -3,6 +3,8 @@ import logging
 from discord.ext import commands
 import json
 
+with open('token.txt') as file:
+    token = file.readline()
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='GIRBot.log', encoding='utf-8', mode='w')
@@ -30,7 +32,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-      
+    
     if message.content.startswith('$test'):
         channel = message.channel
         await channel.send('Der Test hat geklappt!')
@@ -46,7 +48,7 @@ async def on_message(message):
     if message.content.startswith('$abc'):
         channel = message.channel
         await channel.send('Du kannst den Anfang des ABCs!')
-# Hier beginnt das Aufgaben erstellen; der Builder (Builder) und die Aufgabe (Aufgabe) wird herraus gefiltert und als Nachricht ausgegeben
+# Hier beginnt das Aufgaben erstellen; der Builder (Builder) und die Aufgabe (Aufgabe) wird herraus gefiltert, gespeichert und als Nachricht ausgegeben
     if message.content.startswith('$task add'):
         channel = message.channel
         Inhalt = message.content
@@ -60,7 +62,7 @@ async def on_message(message):
         with open('tasks.json', 'w', encoding='utf8') as outfile:
             json.dump(data, outfile)
         await channel.send("Die neue Aufgabe von" + " " + guild.get_member(Builder).name + " " + "ist" + " " + Aufgabe)
-    
+#Auslesen der Aufgaben
     if message.content.startswith('$tasks'):
         channel = message.channel
         Builder = message.author.id
@@ -68,7 +70,7 @@ async def on_message(message):
         for p in data['Builders'][str(Builder)]:
             i+=1
             await channel.send(str(i) + ". " + p)
-    
+#Löschen der Aufgaben
     if message.content.startswith('$task delete'):
         channel = message.channel
         Inhalt = message.content
@@ -92,4 +94,4 @@ async def on_message(message):
 
 
     
-client.run('NzA5MTIzNTk4Mjc0NTI3MjMy.XrhU0A.GPFUP7o9iSKKLQx5Y24vyUYWexE')
+client.run(token)
