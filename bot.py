@@ -10,7 +10,7 @@ handler = logging.FileHandler(filename='GIRBotLog.log', encoding='utf-8', mode='
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 client = discord.Client()
-DebugMode = False
+DebugMode = True
 data = {}
 data['Builders'] = {}
 data['Members'] = {}
@@ -144,6 +144,8 @@ async def on_message(message):
         await client.close()
         time.sleep(3)
         await client.login(token, bot=True)
+
+
 #Anfang der Debug-Funktionen
 #Aktivieren des Debug-Modus
     if message.content.startswith('%DebugMode true') and message.author in (guild.get_role('709719558189088809').members):
@@ -156,7 +158,8 @@ async def on_message(message):
         print('Der Nutzer', message.author, 'hat den Debug Mode deaktiviert!')
         print('----------------------------------------------')
 #Nachrichten in die Konsole ausgeben lassen
-    if message.content.startswith('%message') and message.author in (guild.get_role('709719558189088809').members):
+    global DebugMode
+    if message.content.startswith('%message') and DebugMode == True:
         channel = message.channel
         Message = message.content.split()[2:]
         print('Der Nutzer', message.author, 'hat die Nachricht', Message, 'im Channel', channel, 'um %(asctime)s geschrieben!')
