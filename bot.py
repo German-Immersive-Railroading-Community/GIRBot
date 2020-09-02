@@ -10,6 +10,7 @@ handler = logging.FileHandler(filename='GIRBotLog.log', encoding='utf-8', mode='
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 client = discord.Client()
+DebugMode = False
 data = {}
 data['Builders'] = {}
 data['Members'] = {}
@@ -138,11 +139,19 @@ async def on_message(message):
             print(Member, 'in Members not found!')
             print('----------------------------------------------')
             await channel.send("It seems like you didn't add a Language yet! Try adding one first")
-    
+#Bot neu starten
     if message.content.startswith('$restart') and message.author in (guild.get_role('709719558189088809').members):
         await client.close()
         time.sleep(3)
         await client.login(token, bot=True)
+#Anfang der Debug-Funktionen
+#Aktivieren des Debug-Modus
+    if message.content.startswith('%DebugMode true') and message.author in (guild.get_role('709719558189088809').members):
+        DebugMode = True
+        print('Der Nutzer', message.author, 'hat den Debug Mode aktiviert!')
+        print('----------------------------------------------')
+    
+    
 
 
     
