@@ -32,18 +32,18 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    
+#Der Test Command... Schauen ob er noch funktioniert
     if message.content.startswith('$test'):
         channel = message.channel
         await channel.send('Der Test hat geklappt!')
         print('Der Command "Test" wurde ausgeführt!')
-        print('------------------------------------')
+        print('----------------------------------------------')
 #Activity setzen
     if message.content.startswith('$activity'):
         activity = discord.Activity(name='over Discord', type=discord.ActivityType.watching)
         await client.change_presence(activity=activity)
         print('Der Bot-Status wurde gesetzt!')
-        print('-----------------------------')
+        print('----------------------------------------------')
 #Hier beginnt das Aufgaben erstellen; der Builder (Builder) und die Aufgabe (Aufgabe) wird herraus gefiltert, gespeichert und als Nachricht ausgegeben
     if message.content.startswith('$task add') and message.author in (guild.get_role('692409029384994938').members + guild.get_role('709719558189088809').members):
         channel = message.channel
@@ -84,7 +84,8 @@ async def on_message(message):
             else:
                 await channel.send('Aufgabe nicht gefunden!')
         else:
-            print(Builder, "in Tasklist not found!")
+            print(Builder, 'in Tasklist not found!')
+            print('----------------------------------------------')
             await channel.send("Der Builder " + guild.get_member(Builder).name + "wurde nicht gefunden!")
 #Die Language Funktion
 #Sprachen hinzufügen
@@ -134,8 +135,14 @@ async def on_message(message):
             else:
                 await channel.send("The Language your trying to delete doesn't exist...")
         else:
-            print(Member, "in Members not found!")
+            print(Member, 'in Members not found!')
+            print('----------------------------------------------')
             await channel.send("It seems like you didn't add a Language yet! Try adding one first")
+    
+    if message.content.startswith('$restart') and message.author in (guild.get_role('709719558189088809').members):
+        await client.close()
+        time.sleep(3)
+        await client.login(token, bot=True)
 
 
     
