@@ -150,9 +150,19 @@ async def on_message(message):
         DebugMode = True
         print('Der Nutzer', message.author, 'hat den Debug Mode aktiviert!')
         print('----------------------------------------------')
+#Beenden der Debug Funktion
+    if message.content.startswith('%DebugMode false') and message.author in (guild.get_role('709719558189088809').members):
+        DebugMode = False
+        print('Der Nutzer', message.author, 'hat den Debug Mode deaktiviert!')
+        print('----------------------------------------------')
+#Nachrichten in die Konsole ausgeben lassen
+    if message.content.startswith('%message') and message.author in (guild.get_role('709719558189088809').members):
+        channel = message.channel
+        Message = message.content.split()[2:]
+        print('Der Nutzer', message.author, 'hat die Nachricht', Message, 'im Channel', channel, 'um %(asctime)s geschrieben!')
+        print('----------------------------------------------')
+        await channel.send(channel + ", " + message.author + ", " + Message)
     
     
 
-
-    
 client.run(token)
