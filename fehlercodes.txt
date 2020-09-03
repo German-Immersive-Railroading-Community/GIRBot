@@ -1,0 +1,7 @@
+Liste Aller Fehlercodes
+
+200 - Alles ok
+300 - Nutzer nicht Gefunden
+301 - Nicht genug Parameter
+102 - Attribut sollte Nummer sein es wurde aber keine Nummer eingegeben
+400 - Falsche Nummer an Attributen
