@@ -15,7 +15,7 @@ def command_test(para):
 
 #Command for setting Activity
 def command_activity(para):
-    client = para[0]
+    client = para[1]
     activity = discord.Activity(name='Discord', type=discord.ActivityType.watching)
     await client.change_presence(activity=activity)
     print('Der Bot-Status wurde gesetzt!')
@@ -126,23 +126,21 @@ def command_restart(para):
 #Start of the Debugging Commands
 #Activating Debug
 def debugging_command_DebugTrue(para):
-    developer = para[0]
-    #Setting the "DebugMode" Variable to true
+    developer = para[1]
     print('Der Nutzer', developer.name, 'hat den Debug Mode aktiviert!')
     print('----------------------------------------------')
 
 #Deactivating Debug
 def debugging_command_DebugFalse(para):
-    developer = para[0]
-    #Setting the "DebugMode" Variable to false
+    developer = para[1]
     print('Der Nutzer', developer.name, 'hat den Debug Mode deaktiviert!')
     print('----------------------------------------------')
 
 #Outputing a Message in the Console
 def debugging_command_message(para):
     channel = para[0]
-    message = para[1]
-    developer = para[2]
+    developer = para[1]
+    message = para[2]
     print('Der Nutzer', developer.name, 'hat die Nachricht', message, 'im Channel', channel, 'um %(asctime)s geschrieben!')
     print('----------------------------------------------')
     await channel.send(channel + ", " + developer.name + ", " + message)
