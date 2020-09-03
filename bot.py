@@ -153,32 +153,33 @@ async def on_message(message):
             print('----------------------------------------------')
             await channel.send("It seems like you didn't add a Language yet! Try adding one first")
 #Bot neu starten
-    if message.content.startswith('$restart') and message.author in (guild.get_role('709719558189088809').members):
-        await client.close()
-        time.sleep(3)
-        await client.login(token, bot=True)
+        if message.content.startswith('$restart') and (message.author in guild.get_role('709719558189088809').members):
+            await client.close()
+            time.sleep(3)
+            await client.login(token, bot=True)
 
 
 #Anfang der Debug-Funktionen
 #Aktivieren des Debug-Modus
-    if message.content.startswith('%DebugMode true') and message.author in (guild.get_role('709719558189088809').members):
-        DebugMode = True
-        print('Der Nutzer', message.author, 'hat den Debug Mode aktiviert!')
-        print('----------------------------------------------')
+        if message.content.startswith('%DebugMode true') and message.author in (guild.get_role('709719558189088809').members):
+            DebugMode = True
+            print('Der Nutzer', message.author, 'hat den Debug Mode aktiviert!')
+            print('----------------------------------------------')
 #Beenden der Debug Funktion
-    if message.content.startswith('%DebugMode false') and message.author in (guild.get_role('709719558189088809').members):
-        DebugMode = False
-        print('Der Nutzer', message.author, 'hat den Debug Mode deaktiviert!')
-        print('----------------------------------------------')
+        if message.content.startswith('%DebugMode false') and message.author in (guild.get_role('709719558189088809').members):
+            DebugMode = False
+            print('Der Nutzer', message.author, 'hat den Debug Mode deaktiviert!')
+            print('----------------------------------------------')
 #Nachrichten in die Konsole ausgeben lassen
-    global DebugMode
-    if message.content.startswith('%message') and DebugMode == True:
-        channel = message.channel
-        Message = message.content.split()[2:]
-        print('Der Nutzer', message.author, 'hat die Nachricht', Message, 'im Channel', channel, 'um %(asctime)s geschrieben!')
-        print('----------------------------------------------')
-        await channel.send(channel + ", " + message.author + ", " + Message)
-    
-    
+        global DebugMode
+        if message.content.startswith('%message') and DebugMode == True:
+            channel = message.channel
+            Message = message.content.split()[2:]
+            print('Der Nutzer', message.author, 'hat die Nachricht', Message, 'im Channel', channel, 'um %(asctime)s geschrieben!')
+            print('----------------------------------------------')
+            await channel.send(channel + ", " + message.author + ", " + Message)
+    except:
+        pass
+
 
 client.run(token)

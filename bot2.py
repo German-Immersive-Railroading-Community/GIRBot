@@ -32,7 +32,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    channel = message.channel
     print(message.content)
     cmd  = mh.command(message,client)
     cmd.parameters.append(client)
