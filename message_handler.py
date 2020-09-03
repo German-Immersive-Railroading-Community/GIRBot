@@ -41,13 +41,13 @@ class command:
             self.fct_code=10
             self.parameter.append(message.author)
             Inhalt = Inhalt.split()[2:]
-            Builder = Inhalt[0]
-            Aufgabe = " ".join(Inhalt[1:])
-            Builder = person(client,Builder)
-            if Builder != None:
+            builder = Inhalt[0]
+            task = " ".join(Inhalt[1:])
+            builder = person(client,builder)
+            if builder != None:
                 self.code = 200
-                self.parameters.append(Builder)
-                self.parameters.append(Aufgabe)
+                self.parameters.append(builder)
+                self.parameters.append(task)
             else:
                 self.code = 300
 #Task abfrage
@@ -62,15 +62,15 @@ class command:
             if len(Inhalt)!=2:
                 self.code= 301
                 return
-            Builder = Inhalt[0]
-            Builder = person(Builder)
-            if Builder == None:
+            builder = Inhalt[0]
+            builder = person(builder)
+            if builder == None:
                 self.code= 300
                 return
             try:
                 taskID = int(Inhalt[1])-1
                 self.code=200
-                self.parameters.append(Builder)
+                self.parameters.append(builder)
                 self.parameters.append(taskID)
             except:
                 self.code = 102
@@ -81,9 +81,9 @@ class command:
         elif message.content.startswith('$language add'):
             self.fct_code=20
             if len(message.content)>2:
-                Sprache = " ".join(Sprache.split()[2:])
+                lang = " ".join(lang.split()[2:])
                 self.code=200
-                self.parameters.append(Sprache)
+                self.parameters.append(lang)
             else:
                 self.code=301
 #Sprache löschen
