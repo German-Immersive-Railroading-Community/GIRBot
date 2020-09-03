@@ -25,6 +25,7 @@ class command:
     parameters=[]
     def __init__(self, message, client):
         channel = message.channel
+        self.parameters.append(channel)
 #Einfacher test
         if message.content=="$test":
             self.code=200
@@ -32,14 +33,14 @@ class command:
 #Activity
         elif message.content.startswith('$activity'):
             self.code=200
-            self.fct_code=0
+            self.fct_code=1
 #-----------------------------------------------------------------------------------------------------------------------
 #Task Handling
 #-----------------------------------------------------------------------------------------------------------------------
 #Task add
         elif message.content.startswith('$task add'):
             self.fct_code=10
-            self.parameter.append(message.author)
+            self.parameters.append(message.author)
             Inhalt = Inhalt.split()[2:]
             Builder = Inhalt[0]
             Aufgabe = " ".join(Inhalt[1:])
@@ -63,7 +64,7 @@ class command:
                 self.code= 301
                 return
             Builder = Inhalt[0]
-            Builder = person(Builder)
+            Builder = person(client,Builder)
             if Builder == None:
                 self.code= 300
                 return
