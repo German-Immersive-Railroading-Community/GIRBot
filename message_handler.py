@@ -40,8 +40,7 @@ class command:
 #Task add
         elif message.content.startswith('$task add'):
             self.fct_code=10
-            self.parameters.append(message.author)
-            Inhalt = Inhalt.split()[2:]
+            Inhalt = message.content.split()[2:]
             builder = Inhalt[0]
             task = " ".join(Inhalt[1:])
             builder = person(client,builder)
@@ -59,7 +58,7 @@ class command:
 #Task löschen
         elif message.content.startswith('$task delete'):
             self.fct_code=12
-            Inhalt = Inhalt.split()[2:]
+            Inhalt = message.content.split()[2:]
             if len(Inhalt)!=2:
                 self.code= 301
                 return

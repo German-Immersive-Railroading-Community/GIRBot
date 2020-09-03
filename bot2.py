@@ -13,6 +13,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 client = discord.Client()
 DebugMode = False
+global data
 data = {}
 data['Builders'] = {}
 data['Members'] = {}
@@ -32,26 +33,26 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    global data
     print(message.content)
     cmd  = mh.command(message,client)
-    cmd.parameters.append(client)
     if cmd.code==200:
         if cmd.fct_code == 0:
-            fcts.command_test(cmd.parameters)
+            await fcts.command_test(cmd.parameters)
         elif cmd.fct_code == 1:
-            fcts.command_activity(cmd.parameters)
+            await fcts.command_activity(cmd.parameters)
         elif cmd.fct_code == 10:
-            fcts.command_create_BuilderTask(cmd.parameters)
+            data = await fcts.command_create_BuilderTask(cmd.parameters+[data])
         elif cmd.fct_code == 11:
-            fcts.command_check_BuilderTask(cmd.parameters)
+            data = await fcts.command_check_BuilderTask(cmd.parameters+[data])
         elif cmd.fct_code == 12:
-            fcts.command_delete_BuilderTask(cmd.parameters)
+            data = await fcts.command_delete_BuilderTask(cmd.parameters+[data])
         elif cmd.fct_code == 20:
-            fcts.command_add_language(cmd.parameters)
+            data = await fcts.command_add_language(cmd.parameters+[data])
         elif cmd.fct_code == 21:
-            fcts.command_check_language(cmd.parameters)
+            data = await fcts.command_check_language(cmd.parameters+[data])
         elif cmd.fct_code == 22:
-            fcts.command_delete_language(cmd.parameters)
+            data = await fcts.command_delete_language(cmd.parameters+[data])
     else:
         print(cmd.code)
 client.run(token) 
