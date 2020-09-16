@@ -4,14 +4,11 @@ import discord
 
 def person(client,name):
     guild=client.guilds[0]
-    if name in guild.members:
-        pers = guild.get_member_named(name).id
-        guild = client.guilds[0]
-    elif name[3:-1] in [str(i.id) for i in guild.members]:
+    if name[3:-1] in [str(i.id) for i in guild.members]:
         pers = guild.get_member(int(name[3:-1]))
     else:
         members=[i.name.lower() for i in guild.members]
-        liste=[i for i,x in enumerate(members) if x == name]
+        liste=[i for i,x in enumerate(members) if x == name.lower()]
         if len(liste)>0:
             pers= guild.members[liste[0]]
         else:
@@ -81,21 +78,20 @@ class command:
         elif message.content.startswith('$language add'):
             self.fct_code=20
             if len(message.content)>2:
-                lang = " ".join(lang.split()[2:])
+                lang = " ".join(message.content.split()[2:])
                 self.code=200
                 self.parameters.append(lang)
+                self.parameters.append(message.author)
             else:
                 self.code=301
 #Sprache löschen
-        elif message.content.startswith('$language remove'):
+        elif message.content.startswith('$language remove') or message.content.startswith('$language delete'):
             self.fct_code=21
-            if len(message.content)==3:
-                try:
-                    nmbr = int(message.content.split()[3])
-                    self.code=200
-                    self.parameters.append(nmbr)
-                except:
-                    self.code = 102
+            if len(message.content.split())==3:
+                lang = message.content.split()[2]
+                self.code=200
+                self.parameters.append(lang)
+                self.parameters.append(message.author)
 
             else:
                 self.code=400
@@ -103,7 +99,7 @@ class command:
         elif message.content.startswith("$languages"):
             self.fct_code=22
             if len(message.content)>1:
-                Inhalt = Inhalt.split()[1:]
+                Inhalt = message.content.split()[1:]
                 reqMember = " ".join(Inhalt)
                 reqMember = person(client,reqMember)
                 if reqMember == None:

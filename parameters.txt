@@ -19,8 +19,9 @@ Functions:
     Checking the Languages
         reqMember - 1
     Deleting a Language
-        member - 1
-        lang - 2
+        member - 2
+        lang - 1
+        data - 3
     Activating Debug
         developer - 1
     Deactivating Debug

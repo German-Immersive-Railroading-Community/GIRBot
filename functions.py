@@ -28,7 +28,6 @@ async def command_create_BuilderTask(para):
     builder = para[1]
     task = para[2]
     data = para[3]
-    print(data)
     if not builder.id in data['Builders']:
         data['Builders'][builder.id] = []
     data['Builders'][builder.id].append(task)
@@ -42,11 +41,11 @@ async def command_check_BuilderTask(para):
     channel = para[0]
     builder = para[1]
     data = para[2]
-    if not builder.id in data['Builders']:
+    if not str(builder.id) in data['Builders']:
         await channel.send("You aren't a registered Builder!")
     else:
         i = 0
-        for p in data['Builders'][builder.id]:
+        for p in data['Builders'][str(builder.id)]:
             i+=1
             await channel.send(str(i) + ". " + p)
     return data
@@ -57,10 +56,10 @@ async def command_delete_BuilderTask(para):
     builder = para[1]
     taskID = para[2]
     data = para[3]
-    if builder.id in data['Builders']:
-        if taskID < len(data['Builders'][builder.id]):
-            deletedTask = data['Builders'][builder.id][taskID]
-            del data['Builders'][builder.id][taskID]
+    if str(builder.id) in data['Builders']:
+        if taskID < len(data['Builders'][str(builder.id)]):
+            deletedTask = data['Builders'][str(builder.id)][taskID]
+            del data['Builders'][str(builder.id)][taskID]
             with open('GIRBot.json', 'w', encoding='utf8') as outfile:
                 json.dump(data, outfile)
             await channel.send("Die Aufgabe " + deletedTask + " wurde gelöscht")
@@ -69,7 +68,7 @@ async def command_delete_BuilderTask(para):
     else:
         print(builder.name, 'in Tasklist not found!')
         print('----------------------------------------------')
-        await channel.send("Der Builder " + builder.name + "wurde nicht gefunden!")
+        await channel.send("Der Builder " + builder.name + " wurde nicht gefunden!")
     return data
 #End of the Builder-Task-Tool
 
@@ -98,12 +97,12 @@ async def command_check_language(para):
     channel = para[0]
     reqMember = para[1]
     data = para[2]
-    if not reqMember.id in data['Members'] or not 'language' in (data['Members'][reqMember.id]) or len(data['Members'][reqMember.id]['language']) == 0:
+    if not str(reqMember.id) in data['Members'] or not 'language' in (data['Members'][str(reqMember.id)]) or len(data['Members'][str(reqMember.id)]['language']) == 0:
         await channel.send("The Member " + reqMember.name + " didn't set a Language!")
     else:
         i = 0
         await channel.send("The Languages of " + reqMember.name + " are:")
-        for lang in data['Members'][reqMember.id]['language']:
+        for lang in data['Members'][str(reqMember.id)]['language']:
             i+=1
             await channel.send(str(i) + ". " + lang)
     return data
@@ -111,12 +110,12 @@ async def command_check_language(para):
 #Deleting a Language
 async def command_delete_language(para):
     channel = para[0]
-    member = para[1]
-    lang = para[2]
+    member = para[2]
+    lang = para[1]
     data = para[3]
-    if member.id in data['Members']:
-        if 'language' in data['Members'][member.id] and lang in (data['Members'][member.id]['language']):
-            data['Members'][member.id]['language'].remove(lang)
+    if str(member.id) in data['Members']:
+        if 'language' in data['Members'][str(member.id)] and lang in (data['Members'][str(member.id)]['language']):
+            data['Members'][str(member.id)]['language'].remove(lang)
             with open('GIRBot.json', 'w', encoding='utf8') as outfile:
                 json.dump(data, outfile)
             await channel.send("The Language has been deleted!")

@@ -40,7 +40,7 @@ async def on_message(message):
         if cmd.fct_code == 0:
             await fcts.command_test(cmd.parameters)
         elif cmd.fct_code == 1:
-            await fcts.command_activity(cmd.parameters)
+            await fcts.command_activity(cmd.parameters+[client])
         elif cmd.fct_code == 10:
             data = await fcts.command_create_BuilderTask(cmd.parameters+[data])
         elif cmd.fct_code == 11:
@@ -49,9 +49,9 @@ async def on_message(message):
             data = await fcts.command_delete_BuilderTask(cmd.parameters+[data])
         elif cmd.fct_code == 20:
             data = await fcts.command_add_language(cmd.parameters+[data])
-        elif cmd.fct_code == 21:
-            data = await fcts.command_check_language(cmd.parameters+[data])
         elif cmd.fct_code == 22:
+            data = await fcts.command_check_language(cmd.parameters+[data])
+        elif cmd.fct_code == 21:
             data = await fcts.command_delete_language(cmd.parameters+[data])
     else:
         print(cmd.code)
