@@ -17,10 +17,10 @@ def person(client,name):
 
 
 class command:
-    code = 404
-    fct_code = None
-    parameters=[]
     def __init__(self, message, client):
+        self.code = 404
+        self.fct_code = None
+        self.parameters=[]
         channel = message.channel
         self.parameters.append(channel)
 #Einfacher test
@@ -108,3 +108,9 @@ class command:
                 else:
                     self.code = 200
                     self.parameters.append(reqMember)
+#-----------------------------------------------------------------------------------------------------------------------
+#Debbuging
+#-----------------------------------------------------------------------------------------------------------------------
+#Relog the Bot
+        elif message.content.startswith("%restart" or "%relog"):
+            self.fct_code=23

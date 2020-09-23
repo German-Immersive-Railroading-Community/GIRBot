@@ -79,12 +79,12 @@ async def command_add_language(para):
     lang = para[1]
     member = para[2]
     data = para[3]
-    if not member.id in data['Members']:
-        data['Members'][member.id] = {}
-    if not 'language' in data['Members'][member.id]:
-        data['Members'][member.id]['language'] = []
-    if not lang in data['Members'][member.id]['language']:
-        data['Members'][member.id]['language'].append(lang)
+    if not str(member.id) in data['Members']:
+        data['Members'][str(member.id)] = {}
+    if not 'language' in data['Members'][str(member.id)]:
+        data['Members'][str(member.id)]['language'] = []
+    if not lang in data['Members'][str(member.id)]['language']:
+        data['Members'][str(member.id)]['language'].append(lang)
         with open('GIRBot.json', 'w', encoding='utf8') as outfile:
             json.dump(data, outfile)
         await channel.send("The Language " + lang + " has been added")

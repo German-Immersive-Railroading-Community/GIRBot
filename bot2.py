@@ -34,6 +34,8 @@ async def on_ready():
 @client.event
 async def on_message(message):
     global data
+    if message.author == client.user:
+        return
     print(message.content)
     cmd  = mh.command(message,client)
     if cmd.code==200:
