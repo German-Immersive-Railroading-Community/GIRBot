@@ -77,7 +77,7 @@ class command:
 #Sprachen
 #-----------------------------------------------------------------------------------------------------------------------
 #Sprache hinzufügen
-        elif message.content.startswith('$language add'):
+        elif message.content.startswith('$language add') or message.content.startswith('language set'):
             self.fct_code=20
             if len(message.content)>2:
                 lang = " ".join(message.content.split()[2:])
