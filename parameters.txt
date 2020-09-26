@@ -27,8 +27,10 @@ Functions:
         client - 2
     Activating Debug
         developer - 1
+        data - 2
     Deactivating Debug
         developer - 1
+        data - 2
     Outputing Message
         developer - 1
         message - 2

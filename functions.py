@@ -138,12 +138,20 @@ async def command_restart(para):
 #Activating Debug
 async def debugging_command_DebugTrue(para):
     developer = para[1]
+    data = para[2]
+    data['GIRBot']['DebugMode'] = 'True'
+    with open('GIRBot.json', 'w', encoding='utf8') as outfile:
+        json.dump(data, outfile)
     print('Der Nutzer', developer.name, 'hat den Debug Mode aktiviert!')
     print('----------------------------------------------')
 
 #Deactivating Debug
 async def debugging_command_DebugFalse(para):
     developer = para[1]
+    data = para[2]
+    data['GIRBot']['DebugMode'] = 'False'
+    with open('GIRBot.json', 'w', encoding='utf8') as outfile:
+        json.dump(data, outfile)
     print('Der Nutzer', developer.name, 'hat den Debug Mode deaktiviert!')
     print('----------------------------------------------')
 
