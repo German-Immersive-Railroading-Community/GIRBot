@@ -17,10 +17,12 @@ def person(client,name):
 
 
 class command:
-    def __init__(self, message, client):
+    def __init__(self, message, client, guild, DebugMode):
         self.code = 404
         self.fct_code = None
         self.parameters=[]
+        self.guild = guild
+        self.DebugMode = DebugMode
         channel = message.channel
         self.parameters.append(channel)
 #Einfacher test
@@ -35,7 +37,7 @@ class command:
 #Task Handling
 #-----------------------------------------------------------------------------------------------------------------------
 #Task add
-        elif message.content.startswith('$task add'):
+        elif message.content.startswith('$task add') and message.author in (guild.get_role(692409029384994938).members):
             self.fct_code=10
             Inhalt = message.content.split()[2:]
             builder = Inhalt[0]
@@ -53,7 +55,7 @@ class command:
             self.code=200
             self.parameters.append(message.author)
 #Task löschen
-        elif message.content.startswith('$task delete'):
+        elif message.content.startswith('$task delete') and message.author in (guild.get_role(692409029384994938).members):
             self.fct_code=12
             Inhalt = message.content.split()[2:]
             if len(Inhalt)!=2:
@@ -112,5 +114,18 @@ class command:
 #Debbuging
 #-----------------------------------------------------------------------------------------------------------------------
 #Relog the Bot
-        elif message.content.startswith("%restart" or "%relog"):
-            self.fct_code=23
+        elif (message.content.startswith("%Restart") or message.content.startswith("%Relog")) and message.author in (guild.get_role(709719558189088809).members):
+            self.fct_code = 30
+            self.code = 200
+#Activating Debug
+        elif message.content.startswith("%DebugMode true") and message.author in (guild.get_role(709719558189088809).members):
+            self.fct_code = 31
+            self.code = 200
+#Deactivating Debug
+        elif message.content.startswith("%DebugMode false") and message.author in (guild.get_role(709719558189088809).members):
+            self.fct_code = 32
+            self.code = 200
+#Outputing a Message in the Console
+        elif message.content.startswith("%message") and self.DebugMode == True and message.author in (guild.get_role(709719558189088809).members):
+            self.fct_code = 33
+            self.code = 200

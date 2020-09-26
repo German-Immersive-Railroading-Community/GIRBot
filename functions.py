@@ -2,6 +2,7 @@ import logging
 import discord
 import json
 import time
+import datetime as dt
 if __name__ == "__main__":
     global data
     data = {}
@@ -127,12 +128,11 @@ async def command_delete_language(para):
 #End of the Language-Tool
 
 #Restart the Bot
+#Note: No, the Bot doesn't fuck itself up after that Command, IT'S A FEATURE! <3
 async def command_restart(para):
-    token = para[0]
-    client = para[1]
-    await client.close()
-    time.sleep(3)
-    await client.login(token, bot=True)
+    client = para[2]
+    await client.logout()
+    exit()
 
 #Start of the Debugging Commands
 #Activating Debug
@@ -152,6 +152,6 @@ async def debugging_command_message(para):
     channel = para[0]
     developer = para[1]
     message = para[2]
-    print('Der Nutzer', developer.name, 'hat die Nachricht', message, 'im Channel', channel, 'um %(asctime)s geschrieben!')
+    print('Der Nutzer "', developer.name, '" hat die Nachricht "', message.content, '" im Channel "', channel.name, '" um ', dt.datetime.now().strftime("%H:%M:%S"), ' geschrieben!')
     print('----------------------------------------------')
-    await channel.send(channel + ", " + developer.name + ", " + message)
+    await channel.send(channel.name + ", " + developer.name + ", " + message.content)

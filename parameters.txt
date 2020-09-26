@@ -22,6 +22,9 @@ Functions:
         member - 2
         lang - 1
         data - 3
+    Relogging the Bot
+        token - 1
+        client - 2
     Activating Debug
         developer - 1
     Deactivating Debug

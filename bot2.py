@@ -7,12 +7,11 @@ import functions as fcts
 with open('token.txt') as file:
     token = file.readline()
 logger = logging.getLogger('discord')
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='GIRBotLog.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 client = discord.Client()
-DebugMode = False
 global data
 data = {}
 data['Builders'] = {}
@@ -30,6 +29,8 @@ async def on_ready():
     print('----------------------------------------------')
     global guild
     guild = client.guilds[0]
+    global DebugMode
+    DebugMode = False
 
 @client.event
 async def on_message(message):
@@ -37,7 +38,8 @@ async def on_message(message):
     if message.author == client.user:
         return
     print(message.content)
-    cmd  = mh.command(message,client)
+    global DebugMode
+    cmd  = mh.command(message, client, guild, DebugMode)
     if cmd.code==200:
         if cmd.fct_code == 0:
             await fcts.command_test(cmd.parameters)
@@ -55,6 +57,16 @@ async def on_message(message):
             data = await fcts.command_check_language(cmd.parameters+[data])
         elif cmd.fct_code == 21:
             data = await fcts.command_delete_language(cmd.parameters+[data])
+        elif cmd.fct_code == 30:
+            await fcts.command_restart(cmd.parameters+[token, client])
+        elif cmd.fct_code == 31:
+            await fcts.debugging_command_DebugTrue(cmd.parameters+[message.author])
+            DebugMode = True
+        elif cmd.fct_code == 32:
+            await fcts.debugging_command_DebugFalse(cmd.parameters+[message.author])
+            DebugMode = False
+        elif cmd.fct_code == 33:
+            await fcts.debugging_command_message(cmd.parameters+[message.author, message])
     else:
         print(cmd.code)
 client.run(token) 
