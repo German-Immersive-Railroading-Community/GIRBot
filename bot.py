@@ -18,6 +18,7 @@ data = {}
 data['Builders'] = {}
 data['Members'] = {}
 data['GIRBot'] = {}
+data['GIRBot']['DebugMode'] = ""
 try: 
     with open('GIRBot.json') as json_file:
         data = json.load(json_file)
@@ -25,7 +26,7 @@ except:
     print('JSON File (GIRBot.json) corrupted!')
     print('------------------------------------')
 
-DebugMode = 'True' in data['GIRBot']['DebugMode']
+DebugMode = data['GIRBot']['DebugMode'] == 'True'
 
 @client.event
 async def on_ready():
