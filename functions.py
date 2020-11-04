@@ -129,6 +129,7 @@ async def command_delete_language(para):
 
 #Restart the Bot
 #Note: No, the Bot doesn't fuck itself up after that Command, IT'S A FEATURE! <3
+#And nooo, I don't know why
 async def command_restart(para):
     client = para[2]
     await client.logout()
@@ -163,3 +164,12 @@ async def debugging_command_message(para):
     print('Der Nutzer "', developer.name, '" hat die Nachricht "', message.content, '" im Channel "', channel.name, '" um ', dt.datetime.now().strftime("%H:%M:%S"), ' geschrieben!')
     print('----------------------------------------------')
     await channel.send(channel.name + ", " + developer.name + ", " + message.content)
+#End of the Debbugging Commands
+
+#Start of the Licensing-Tool
+#Adding a License
+async def licensing_adding_license(para):
+    creator = para[1]
+    data = para[2]
+    license_number = para[3]
+    driver = para[4]

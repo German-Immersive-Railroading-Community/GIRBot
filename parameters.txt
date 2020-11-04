@@ -34,3 +34,8 @@ Functions:
     Outputing Message
         developer - 1
         message - 2
+    Adding License
+        creator - 1
+        data - 2
+        license_number - 3
+        driver - 4

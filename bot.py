@@ -3,6 +3,7 @@ import logging
 import json
 import message_handler as mh
 import functions as fcts
+guild = None
 
 with open('token.txt') as file:
     token = file.readline()
