@@ -17,6 +17,7 @@ global data
 data = {}
 data['Builders'] = {}
 data['Members'] = {}
+data['GIRBot'] = {}
 try: 
     with open('GIRBot.json') as json_file:
         data = json.load(json_file)
