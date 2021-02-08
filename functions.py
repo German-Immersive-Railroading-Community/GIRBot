@@ -173,3 +173,5 @@ async def licensing_adding_license(para):
     data = para[2]
     license_number = para[3]
     driver = para[4]
+    if license_number in data['GIRBot']['Licenses']:
+        data['GIRBot']['Licenses'][license_number] = {}
