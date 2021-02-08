@@ -19,9 +19,19 @@ data['Builders'] = {}
 data['Members'] = {}
 data['GIRBot'] = {}
 data['GIRBot']['DebugMode'] = ""
+data['GIRBot']['Licenses'] = {}
+
+def implement(json, data):
+    for key, value in json.items():
+        if type(value) == dict and key in dict:
+            data[key] = implement(value, data[key])
+        else:
+            data[key] = value
+    return data
+
 try: 
     with open('GIRBot.json') as json_file:
-        data = json.load(json_file)
+        data = implement(json.load(json_file), data)
 except:
     print('JSON File (GIRBot.json) corrupted!')
     print('------------------------------------')
@@ -38,8 +48,6 @@ async def on_ready():
 @client.event
 async def on_message(message):
     global data
-    if message.author == client.user:
-        return
     print(message.content)
     global DebugMode
     cmd  = mh.command(message, client, guild, DebugMode)

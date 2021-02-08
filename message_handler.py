@@ -29,6 +29,9 @@ class command:
         if message.content=="$test":
             self.code=200
             self.fct_code=0
+#Ignore Bot messages and other things not starting with the prefix
+        elif not message.content.startswith('$') or message.content.startswith('%'):
+            pass
 #Activity
         elif message.content.startswith('$activity'):
             self.code=200
