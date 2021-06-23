@@ -2,7 +2,7 @@ aiohttp==3.7.4.post0
 async-timeout==3.0.1
 attrs==21.2.0
 chardet==4.0.0
-discord-py-slash-command==1.2.2
+discord-py-slash-command==2.0.1
 discord.py==1.7.2
 idna==3.2
 multidict==5.1.0
