@@ -6,6 +6,7 @@ from decouple import config
 #import db_handler as dbh
 import os
 from discord.ext import commands as cmd
+from discord.guild import Guild
 # DC Slash
 import discord_slash as dcs
 from discord_slash.utils.manage_commands import create_choice, create_option
@@ -86,7 +87,8 @@ async def on_ready():
     ]
 )
 async def hug(ctx, person, language):
-    person.add_roles(girc_guild.get_role(dev_role_id))
+    print(girc_guild.name)
+    person.add_roles(girc_guild.get_role(self=girc_guild, role_id = dev_role_id))
     person.add_roles(dc.utils.get(girc_guild.roles,
                      name=language + " Member").id)
     await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!")
