@@ -1,12 +1,9 @@
 from sys import prefix
 import discord as dc
 import logging
-import json
 from decouple import config
 #import db_handler as dbh
-import os
 from discord.ext import commands as cmd
-from discord.guild import Guild
 # DC Slash
 import discord_slash as dcs
 from discord_slash.utils.manage_commands import create_choice, create_option
@@ -28,13 +25,14 @@ bot_prefix = "ANiceAndLongPrefixSoNoOneUsesIt"
 token = config("token")
 client = cmd.Bot(command_prefix=bot_prefix, intents=dc.Intents.all())
 slash = dcs.SlashCommand(client, sync_commands=True)
+
 guild_id = str(config("guild_id")).split(",")
 guild_id = [int(i) for i in guild_id]
 girc_guild_id = int(guild_id[0])
+
 head_dev_role_id = int(config("head_dev_role_id"))
 dev_role_id = int(config("dev_role_id"))
-girc_guild = dc.Guild
-everyone_role = dc.Role
+everyone_role = config("everyone_role_id")
 
 # Standard shit
 
@@ -42,8 +40,6 @@ everyone_role = dc.Role
 @client.event
 async def on_ready():
     print("Let them trains roll!")
-    girc_guild = client.get_guild(girc_guild_id)
-    everyone_role = girc_guild.default_role
 
 # Initializing the Slash Commands
 # Commands without DB use
@@ -53,12 +49,11 @@ async def on_ready():
     name="DevSet",
     description="Give someone the Dev-Role... Spooky",
     guild_ids=guild_id,
+    default_permission=False,
     permissions={
-        girc_guild: [
+        girc_guild_id: [
                 create_permission(head_dev_role_id,
                                   SlashCommandPermissionType.ROLE, True),
-                create_permission(everyone_role.id,
-                                  SlashCommandPermissionType.ROLE, False)
         ]
     },
     options=[
@@ -86,11 +81,10 @@ async def on_ready():
         )
     ]
 )
-async def hug(ctx, person, language):
-    print(girc_guild.name)
-    person.add_roles(girc_guild.get_role(self=girc_guild, role_id = dev_role_id))
-    person.add_roles(dc.utils.get(girc_guild.roles,
-                     name=language + " Member").id)
+async def devset(ctx, person, language):
+    await person.add_roles(ctx.guild.get_role(role_id=dev_role_id))
+    await person.add_roles(dc.utils.get(ctx.guild.roles,
+                                        name=language + " Member"))
     await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!")
 
 
