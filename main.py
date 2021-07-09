@@ -110,8 +110,8 @@ async def devset(ctx, person, language):
     ]
 )
 async def application(ctx, role, text):
-    #TODO Check in Class 'Db_interface' function is_member = True, else cancel with message
-    #TODO Check in Class 'Db_interface' function count_application > 3, cancel with message
+    # TODO Check in Class 'Db_interface' function is_member = True, else cancel with message
+    # TODO Check in Class 'Db_interface' function count_app > 3, cancel with message
     print("Placeholder")
 
 client.run(token)
