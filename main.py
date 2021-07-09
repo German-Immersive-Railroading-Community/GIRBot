@@ -34,6 +34,8 @@ girc_guild_id = int(guild_id[0])
 head_dev_role_id = int(config("head_dev_role_id"))
 dev_role_id = int(config("dev_role_id"))
 
+db = Dbi()
+
 # Standard shit
 
 
@@ -111,12 +113,13 @@ async def devset(ctx, person, language):
 )
 async def application(ctx, role, text):
     # TODO Check in Class 'Db_interface' function is_member = True, else cancel with message | HOLDED! Need the register-plugin-side first
-    # if not Dbi.is_member(ctx.author.id) == True:
+    # if not db.is_member(ctx.author.id) == True:
     #    await ctx.send(content="You are not registered! Please register first using our register function!")
 
-    if Dbi.count_app(ctx.author.id) > 3:
+    if db.count_app(ctx.author.id) > 2:
         await ctx.send(content="You already have 3 Applications open! Please wait for them to be processed.", hidden=True)
-        return
+    elif db.count_app(ctx.author.id, role=role.id) > 0:
+        await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", hidden=True)
     else:
         app_embed = dc.Embed(
             title=role.name,
@@ -124,8 +127,8 @@ async def application(ctx, role, text):
             color=role.colour.value
         ).set_author(name=ctx.author.display_name)
         channel = dc.utils.get(ctx.guild.channels, id=sent_app_channel_id)
-        # TODO Get the app added to the database
-        await channel.send(embed=app_embed)
+        embed_message = await channel.send(embed=app_embed)
+        db.add_app(ctx.author.id, role.id, embed_message.id)
         await ctx.send(content="Thank you for applying! You will be notified when we processed it.", hidden=True)
 
 client.run(token)
