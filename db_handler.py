@@ -19,12 +19,16 @@ class Db_interface:
         self.cursor.execute("SHOW TABLES")
         return self.cursor.fetchall()
 
-    def add_app(self, user_id, role_id, message_id):
-        app_id = self.new_id()
+    def add_app(self, user_id, role_id, message_id, app_id=0):
+        if not app_id:
+            app_id = self.new_id()
+        elif not self.check_id_free(app_id):
+            raise Exception("App ID already exists!")
         sql = "INSERT INTO Application (ID,MemberId,role,MessageID) VALUES (%s, %s, %s, %s)"
         adr = (app_id, user_id, role_id, message_id,)
         self.cursor.execute(sql, adr)
         self.db.commit()
+        return app_id
 
     def is_member(self, id):
         sql = "SELECT null FROM Member WHERE ID = %s"
@@ -51,13 +55,16 @@ class Db_interface:
             qs = sum(int(digit) for digit in str(app_id))
             checkd = 8-qs % 8
             app_id = app_id*10+checkd
-            # check if id already exist
+            if self.check_id_free(app_id):
+                return app_id
+        raise Exception("No free application Id found")
+
+    def check_id_free(self, app_id):
+        # check if id already exist
             sql = "SELECT null FROM Application WHERE ID = %s"
             adr = (app_id,)
             self.cursor.execute(sql, adr)
-            if len(self.cursor.fetchall()) == 0:
-                return app_id
-        raise Exception("No free application Id found")
+            return len(self.cursor.fetchall()) == 0
 
     def check_vote(self,app_id):
         sql = "SELECT is_in_favor FROM app_vote WHERE app_id = %s"

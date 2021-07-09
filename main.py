@@ -1,14 +1,18 @@
-from sys import prefix
-import discord as dc
 import logging
-from decouple import config
-from db_handler import Db_interface as Dbi
-from discord.ext import commands as cmd
-# DC Slash
+from os import name
+from sys import prefix
+
+import discord as dc
 import discord_slash as dcs
-from discord_slash.utils.manage_commands import create_choice, create_option
-from discord_slash.utils.manage_commands import create_permission
+from decouple import config
+from discord.ext import commands as cmd
 from discord_slash.model import SlashCommandPermissionType
+from discord_slash.utils.manage_commands import (create_choice, create_option,
+                                                 create_permission)
+
+from db_handler import Db_interface as Dbi
+from variables import *
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Logging
@@ -21,19 +25,8 @@ handler.setFormatter(logging.Formatter(
 logger.addHandler(handler)
 
 # Setting Variables
-bot_prefix = "ANiceAndLongPrefixSoNoOneUsesIt"
-token = config("token")
 client = cmd.Bot(command_prefix=bot_prefix, intents=dc.Intents.all())
 slash = dcs.SlashCommand(client, sync_commands=True)
-sent_app_channel_id = config("sent_app_channel_id")
-
-guild_id = str(config("guild_id")).split(",")
-guild_id = [int(i) for i in guild_id]
-girc_guild_id = int(guild_id[0])
-
-head_dev_role_id = int(config("head_dev_role_id"))
-dev_role_id = int(config("dev_role_id"))
-
 db = Dbi()
 
 # Standard shit
@@ -126,9 +119,62 @@ async def application(ctx, role, text):
             description=text,
             color=role.colour.value
         ).set_author(name=ctx.author.display_name)
+        app_id = db.new_id()
+        app_embed.set_footer(text=str(app_id))
         channel = dc.utils.get(ctx.guild.channels, id=sent_app_channel_id)
         embed_message = await channel.send(embed=app_embed)
-        db.add_app(ctx.author.id, role.id, embed_message.id)
+        db.add_app(ctx.author.id, role.id, embed_message.id, app_id=app_id)
         await ctx.send(content="Thank you for applying! You will be notified when we processed it.", hidden=True)
+
+
+@slash.slash(
+    name="Vote",
+    description="Vote for a application",
+    guild_ids=guild_id,
+    default_permission=False,
+    permissions={
+        girc_guild_id: [
+            create_permission(admin_role_id,
+                              SlashCommandPermissionType.ROLE, True
+                              ),
+            create_permission(owner_role_id,
+                              SlashCommandPermissionType.ROLE, True
+                              )
+        ]
+    },
+    options=[
+        create_option(
+            name="id",
+            description="The ID of the application (see footer).",
+            option_type=4,
+            required=True
+        ),
+        create_option(
+            name="vote",
+            description="Wether or not the application is okay with you.",
+            option_type=5,
+            required=True,
+            choices=[
+                create_choice(
+                    name="Yes",
+                    value=True
+                ),
+                create_choice(
+                    name="No",
+                    value=False
+                )
+            ]
+        )
+    ]
+)
+async def vote(ctx, id, vote):
+    if not ctx.channel.id == sent_app_channel_id:
+        await ctx.send(content="This is the wrong channel!", hidden=True)
+        return
+    if db.check_id_free(id):
+        await ctx.send(content="This App ID does not exist!", hidden=True)
+        return
+    db.vote_for(id, ctx.author, vote)
+    await ctx.send(content="You succesfully voted.")
 
 client.run(token)
