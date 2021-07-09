@@ -2,7 +2,7 @@ from sys import prefix
 import discord as dc
 import logging
 from decouple import config
-#import db_handler as dbh
+from db_handler import Db_interface as Dbi
 from discord.ext import commands as cmd
 # DC Slash
 import discord_slash as dcs
@@ -110,8 +110,22 @@ async def devset(ctx, person, language):
     ]
 )
 async def application(ctx, role, text):
-    # TODO Check in Class 'Db_interface' function is_member = True, else cancel with message
-    # TODO Check in Class 'Db_interface' function count_app > 3, cancel with message
-    print("Placeholder")
+    # TODO Check in Class 'Db_interface' function is_member = True, else cancel with message | HOLDED! Need the register-plugin-side first
+    # if not Dbi.is_member(ctx.author.id) == True:
+    #    await ctx.send(content="You are not registered! Please register first using our register function!")
+
+    if Dbi.count_app(ctx.author.id) > 3:
+        await ctx.send(content="You already have 3 Applications open! Please wait for them to be processed.", hidden=True)
+        return
+    else:
+        app_embed = dc.Embed(
+            title=role.name,
+            description=text,
+            color=role.colour.value
+        ).set_author(name=ctx.author.display_name)
+        channel = dc.utils.get(ctx.guild.channels, id=sent_app_channel_id)
+        # TODO Get the app added to the database
+        await channel.send(embed=app_embed)
+        await ctx.send(content="Thank you for applying! You will be notified when we processed it.", hidden=True)
 
 client.run(token)
