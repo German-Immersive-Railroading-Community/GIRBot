@@ -98,6 +98,12 @@ class Db_interface:
         self.cursor.execute(sql, adr)
         self.db.commit()
         return has_voted
+
+    def del_app(self,app_id):
+        sql = "DELETE Application,app_vote FROM Application LEFT JOIN app_vote ON Application.ID = app_vote.app_id WHERE ID = %s"
+        adr = (app_id,)
+        self.cursor.execute(sql, adr, multi=True)
+        self.db.commit()
 if __name__ == "__main__":
-    print("This File is not supposed to be the main file")
-    exit()
+    db_t = Db_interface()
+    db_t.del_app(8798)
