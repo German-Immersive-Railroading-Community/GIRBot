@@ -166,5 +166,15 @@ async def vote(ctx, id, vote):
         return
     db.vote_for(id, ctx.author.id, vote)
     await ctx.send(content="You succesfully voted.")
+    votes = db.check_vote(id)
+    voters = len([voter for voter in client.get_channel(sent_app_channel_id).members
+                  if ctx.guild.get_role(role_id=admin_role_id) in voter.roles
+                  or ctx.guild.get_role(owner_role_id) in voter.roles])
+    if votes["in_favor"] > voters//2:
+        app_data = db.get_app(id)
+        await ctx.guild.get_member(app_data["member_id"]).add_roles(ctx.guild.get_role(role_id=app_data["role"]))
+        await ctx.channel.fetch_message(app_data["messsage_id"]).add_reaction(":white_check_mark:")
+        # TODO Write the User a DM
+        db.del_app(id)
 
 client.run(token)

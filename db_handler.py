@@ -24,14 +24,14 @@ class Db_interface:
             app_id = self.new_id()
         elif not self.check_id_free(app_id):
             raise Exception("App ID already exists!")
-        sql = "INSERT INTO Application (ID,MemberId,role,MessageID) VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO Application (id,member_id,role,message_id) VALUES (%s, %s, %s, %s)"
         adr = (app_id, user_id, role_id, message_id,)
         self.cursor.execute(sql, adr)
         self.db.commit()
         return app_id
 
     def is_member(self, id):
-        sql = "SELECT null FROM Member WHERE ID = %s"
+        sql = "SELECT null FROM Member WHERE id = %s"
         adr = (id,)
         self.cursor.execute(sql, adr)
         return len(self.cursor.fetchall()) == 1
@@ -40,10 +40,10 @@ class Db_interface:
         sql = ""
         adr = ""
         if role == None:
-            sql = "SELECT null FROM Application WHERE MemberID = %s"
+            sql = "SELECT null FROM Application WHERE member_id = %s"
             adr = (id,)
         else:
-            sql = "SELECT null FROM Application WHERE MemberID = %s AND role = %s"
+            sql = "SELECT null FROM Application WHERE member_id = %s AND role = %s"
             adr = (id, role,)
         self.cursor.execute(sql, adr)
         return len(self.cursor.fetchall())
@@ -61,12 +61,12 @@ class Db_interface:
 
     def check_id_free(self, app_id):
         # check if id already exist
-            sql = "SELECT null FROM Application WHERE ID = %s"
-            adr = (app_id,)
-            self.cursor.execute(sql, adr)
-            return len(self.cursor.fetchall()) == 0
+        sql = "SELECT null FROM Application WHERE id = %s"
+        adr = (app_id,)
+        self.cursor.execute(sql, adr)
+        return len(self.cursor.fetchall()) == 0
 
-    def check_vote(self,app_id):
+    def check_vote(self, app_id):
         sql = "SELECT is_in_favor FROM app_vote WHERE app_id = %s"
         adr = (app_id,)
         self.cursor.execute(sql, adr)
@@ -74,36 +74,45 @@ class Db_interface:
         count_against = 0
         for (vote,) in self.cursor:
             if vote:
-                count_in_favor+=1
+                count_in_favor += 1
             else:
-                count_against+=1
-        return {"in_favor":count_in_favor, "against":count_against}
+                count_against += 1
+        return {"in_favor": count_in_favor, "against": count_against}
 
-    def has_voted(self,app_id,voter_id):
+    def has_voted(self, app_id, voter_id):
         sql = "SELECT null FROM app_vote WHERE app_id = %s AND voter_id = %s "
-        adr = (app_id,voter_id,)
+        adr = (app_id, voter_id,)
         self.cursor.execute(sql, adr)
         return len(self.cursor.fetchall()) == 1
 
-    def vote_for(self,app_id,voter_id,is_in_favor):
+    def vote_for(self, app_id, voter_id, is_in_favor):
         sql = ""
         adr = None
-        has_voted = self.has_voted(app_id,voter_id)
+        has_voted = self.has_voted(app_id, voter_id)
         if not has_voted:
             sql = "INSERT INTO app_vote (app_id,voter_id,is_in_favor) VALUES (%s, %s, %s)"
-            adr = (app_id,voter_id,is_in_favor,)
+            adr = (app_id, voter_id, is_in_favor,)
         else:
             sql = "UPDATE app_vote SET is_in_favor=%s WHERE app_id = %s AND voter_id = %s"
-            adr = (is_in_favor,app_id,voter_id,)
+            adr = (is_in_favor, app_id, voter_id,)
         self.cursor.execute(sql, adr)
         self.db.commit()
         return has_voted
 
-    def del_app(self,app_id):
-        sql = "DELETE Application,app_vote FROM Application LEFT JOIN app_vote ON Application.ID = app_vote.app_id WHERE ID = %s"
+    def del_app(self, app_id):
+        sql = "DELETE Application,app_vote FROM Application LEFT JOIN app_vote ON Application.id = app_vote.app_id WHERE id = %s"
         adr = (app_id,)
-        self.cursor.execute(sql, adr, multi=True)
+        self.cursor.execute(sql, adr)
         self.db.commit()
+
+    def get_app(self, app_id):
+        sql = "SELECT member_id, role, message_id FROM Application WHERE app_id = %s"
+        adr = (app_id,)
+        self.cursor.execute(sql, adr)
+        for (member_id, role, message_id) in self.cursor:
+            return {"member_id": member_id, "role": role, "message_id": message_id}
+
+
 if __name__ == "__main__":
     db_t = Db_interface()
     db_t.del_app(8798)
