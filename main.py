@@ -104,13 +104,13 @@ async def devset(ctx, person, language):
         )
     ]
 )
-async def application(ctx, role, text):
+async def application(ctx, role, text="No text has been given!"):
     # TODO Check in Class 'Db_interface' function is_member = True, else cancel with message | HOLDED! Need the register-plugin-side first
     # if not db.is_member(ctx.author.id) == True:
     #    await ctx.send(content="You are not registered! Please register first using our register function!")
 
     if db.count_app(ctx.author.id) > 2:
-        await ctx.send(content="You already have 3 Applications open! Please wait for them to be processed.", hidden=True)
+        await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", hidden=True)
     elif db.count_app(ctx.author.id, role=role.id) > 0:
         await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", hidden=True)
     else:
@@ -121,7 +121,7 @@ async def application(ctx, role, text):
         ).set_author(name=ctx.author.display_name)
         app_id = db.new_id()
         app_embed.set_footer(text=str(app_id))
-        channel = dc.utils.get(ctx.guild.channels, id=sent_app_channel_id)
+        channel = client.get_channel(sent_app_channel_id)
         embed_message = await channel.send(embed=app_embed)
         db.add_app(ctx.author.id, role.id, embed_message.id, app_id=app_id)
         await ctx.send(content="Thank you for applying! You will be notified when we processed it.", hidden=True)
@@ -153,17 +153,7 @@ async def application(ctx, role, text):
             name="vote",
             description="Wether or not the application is okay with you.",
             option_type=5,
-            required=True,
-            choices=[
-                create_choice(
-                    name="Yes",
-                    value=True
-                ),
-                create_choice(
-                    name="No",
-                    value=False
-                )
-            ]
+            required=True
         )
     ]
 )
@@ -174,7 +164,7 @@ async def vote(ctx, id, vote):
     if db.check_id_free(id):
         await ctx.send(content="This App ID does not exist!", hidden=True)
         return
-    db.vote_for(id, ctx.author, vote)
+    db.vote_for(id, ctx.author.id, vote)
     await ctx.send(content="You succesfully voted.")
 
 client.run(token)
