@@ -1,1 +1,1 @@
-screen -AmdS GIRBot python3 bot.py
+screen -AmS GIRBot python3 main.py
