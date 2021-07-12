@@ -106,7 +106,7 @@ class Db_interface:
         self.db.commit()
 
     def get_app(self, app_id):
-        sql = "SELECT member_id, role, message_id FROM Application WHERE app_id = %s"
+        sql = "SELECT member_id, role, message_id FROM Application WHERE id = %s"
         adr = (app_id,)
         self.cursor.execute(sql, adr)
         for (member_id, role, message_id) in self.cursor:
@@ -115,4 +115,4 @@ class Db_interface:
 
 if __name__ == "__main__":
     db_t = Db_interface()
-    db_t.del_app(8798)
+    db_t.del_app(0)

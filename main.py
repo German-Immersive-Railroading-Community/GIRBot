@@ -170,11 +170,21 @@ async def vote(ctx, id, vote):
     voters = len([voter for voter in client.get_channel(sent_app_channel_id).members
                   if ctx.guild.get_role(role_id=admin_role_id) in voter.roles
                   or ctx.guild.get_role(owner_role_id) in voter.roles])
+    app_data = db.get_app(id)
     if votes["in_favor"] > voters//2:
-        app_data = db.get_app(id)
-        await ctx.guild.get_member(app_data["member_id"]).add_roles(ctx.guild.get_role(role_id=app_data["role"]))
-        await ctx.channel.fetch_message(app_data["messsage_id"]).add_reaction(":white_check_mark:")
-        # TODO Write the User a DM
+        role_to_give = ctx.guild.get_role(role_id=app_data["role"])
+        await ctx.guild.get_member(app_data["member_id"]).add_roles(role_to_give)
+        app_message = await ctx.channel.fetch_message(app_data["message_id"])
+        await app_message.add_reaction("\N{White Heavy Check Mark}")
+        dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
+        await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been accepted! Have fun with your new role.")
+        db.del_app(id)
+    elif votes["against"] > voters//2:
+        role_to_give = ctx.guild.get_role(role_id=app_data["role"])
+        app_message = await ctx.channel.fetch_message(app_data["message_id"])
+        await app_message.add_reaction("\N{No Entry Sign}")
+        dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
+        await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
 
 client.run(token)
