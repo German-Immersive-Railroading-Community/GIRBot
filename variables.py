@@ -1,6 +1,8 @@
 from decouple import config
 
 sent_app_channel_id = int(config("sent_app_channel_id"))
+builderwish_channel_id=int(config("builderwish_channel_id"))
+sent_idea_channel_idea=int(config("sent_idea_channel_idea"))
 
 guild_id = str(config("guild_id")).split(",")
 guild_id = [int(i) for i in guild_id]

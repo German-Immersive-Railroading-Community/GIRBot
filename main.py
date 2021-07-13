@@ -1,4 +1,5 @@
 import logging
+import random as rd
 from os import name
 from sys import prefix
 
@@ -83,7 +84,49 @@ async def devset(ctx, person, language):
     await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", hidden=True)
 
 
+@slash.slash(
+    name="Idea",
+    description="Send us a wish or idea you have!",
+    guild_ids=guild_id,
+    options=[
+        create_option(
+            name="type",
+            description="Is it an idea or an wish?",
+            option_type=3,
+            required=True,
+            choices=[
+                create_choice(
+                    name="Idea",
+                    value="Idea"
+                ),
+                create_choice(
+                    name="Wish",
+                    value="Wish"
+                )
+            ]
+        ),
+        create_option(
+            name="text",
+            description="Your idea or wish you want to tell us.",
+            option_type=3,
+            required=True
+        )
+    ]
+)
+async def ideas_wishes(ctx, type, text):
+    idea_embed = dc.Embed(
+        title=type,
+        description=text,
+        color=rd.randint(0, 0xFFFFFF)
+    ).set_author(name=ctx.author.display_name)
+    channel = client.get_channel(sent_idea_channel_idea)
+    embed_message = await channel.send(embed=idea_embed)
+    await embed_message.add_reaction("\N{White Heavy Check Mark}")
+    await embed_message.add_reaction("\N{No Entry Sign}")
+    await ctx.send(content=f"Thank you! Your {type} has been sent to us.", hidden=True)
+
 # Commands with DB use
+
 
 @slash.slash(
     name="Apply",
@@ -165,23 +208,22 @@ async def vote(ctx, id, vote):
         await ctx.send(content="This App ID does not exist!", hidden=True)
         return
     db.vote_for(id, ctx.author.id, vote)
-    await ctx.send(content="You succesfully voted.")
+    await ctx.send(content=f"You succesfully voted for {id}.")
     votes = db.check_vote(id)
     voters = len([voter for voter in client.get_channel(sent_app_channel_id).members
                   if ctx.guild.get_role(role_id=admin_role_id) in voter.roles
                   or ctx.guild.get_role(owner_role_id) in voter.roles])
     app_data = db.get_app(id)
+    app_message = await ctx.channel.fetch_message(app_data["message_id"])
     if votes["in_favor"] > voters//2:
         role_to_give = ctx.guild.get_role(role_id=app_data["role"])
         await ctx.guild.get_member(app_data["member_id"]).add_roles(role_to_give)
-        app_message = await ctx.channel.fetch_message(app_data["message_id"])
         await app_message.add_reaction("\N{White Heavy Check Mark}")
         dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
         await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been accepted! Have fun with your new role.")
         db.del_app(id)
     elif votes["against"] > voters//2:
         role_to_give = ctx.guild.get_role(role_id=app_data["role"])
-        app_message = await ctx.channel.fetch_message(app_data["message_id"])
         await app_message.add_reaction("\N{No Entry Sign}")
         dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
         await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
