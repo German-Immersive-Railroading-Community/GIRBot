@@ -119,7 +119,7 @@ async def ideas_wishes(ctx, type, text):
         description=text,
         color=rd.randint(0, 0xFFFFFF)
     ).set_author(name=ctx.author.display_name)
-    channel = client.get_channel(sent_idea_channel_idea)
+    channel = client.get_channel(sent_idea_channel_id)
     embed_message = await channel.send(embed=idea_embed)
     await embed_message.add_reaction("\N{White Heavy Check Mark}")
     await embed_message.add_reaction("\N{No Entry Sign}")
