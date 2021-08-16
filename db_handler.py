@@ -1,6 +1,9 @@
+import random as rd
+
 import mysql.connector as sql
 from decouple import config
-import random as rd
+from mysql.connector.errors import OperationalError
+
 # Connecting and setting up SQL
 
 
@@ -15,8 +18,25 @@ class Db_interface:
         )
         self.cursor = self.db.cursor()
 
+    def reconnect(self):
+        self.db.disconnect()
+        self.db = sql.connect(
+            host=str(config("host")),
+            user=str(config("db_user")),
+            password=str(config("db_password")),
+            database=str(config("db_name"))
+        )
+        self.cursor = self.db.cursor()
+
     def status(self):
-        self.cursor.execute("SHOW TABLES")
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute("SHOW TABLES")
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         return self.cursor.fetchall()
 
     def add_app(self, user_id, role_id, message_id, app_id=0):
@@ -26,14 +46,28 @@ class Db_interface:
             raise Exception("App ID already exists!")
         sql = "INSERT INTO Application (id,member_id,role,message_id) VALUES (%s, %s, %s, %s)"
         adr = (app_id, user_id, role_id, message_id,)
-        self.cursor.execute(sql, adr)
-        self.db.commit()
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                self.db.commit()
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         return app_id
 
     def is_member(self, id):
         sql = "SELECT null FROM Member WHERE id = %s"
         adr = (id,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         return len(self.cursor.fetchall()) == 1
 
     def count_app(self, id, role=None):
@@ -45,7 +79,14 @@ class Db_interface:
         else:
             sql = "SELECT null FROM Application WHERE member_id = %s AND role = %s"
             adr = (id, role,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         return len(self.cursor.fetchall())
 
     def new_id(self):
@@ -63,13 +104,27 @@ class Db_interface:
         # check if id already exist
         sql = "SELECT null FROM Application WHERE id = %s"
         adr = (app_id,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         return len(self.cursor.fetchall()) == 0
 
     def check_vote(self, app_id):
         sql = "SELECT is_in_favor FROM app_vote WHERE app_id = %s"
         adr = (app_id,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         count_in_favor = 0
         count_against = 0
         for (vote,) in self.cursor:
@@ -82,7 +137,14 @@ class Db_interface:
     def has_voted(self, app_id, voter_id):
         sql = "SELECT null FROM app_vote WHERE app_id = %s AND voter_id = %s "
         adr = (app_id, voter_id,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         return len(self.cursor.fetchall()) == 1
 
     def vote_for(self, app_id, voter_id, is_in_favor):
@@ -95,20 +157,41 @@ class Db_interface:
         else:
             sql = "UPDATE app_vote SET is_in_favor=%s WHERE app_id = %s AND voter_id = %s"
             adr = (is_in_favor, app_id, voter_id,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         self.db.commit()
         return has_voted
 
     def del_app(self, app_id):
         sql = "DELETE Application,app_vote FROM Application LEFT JOIN app_vote ON Application.id = app_vote.app_id WHERE id = %s"
         adr = (app_id,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         self.db.commit()
 
     def get_app(self, app_id):
         sql = "SELECT member_id, role, message_id FROM Application WHERE id = %s"
         adr = (app_id,)
-        self.cursor.execute(sql, adr)
+        ok = False
+        while not ok:
+            try:
+                self.cursor.execute(sql, adr)
+                ok = True
+            except OperationalError:
+                self.reconnect()
+                continue
         for (member_id, role, message_id) in self.cursor:
             return {"member_id": member_id, "role": role, "message_id": message_id}
 
