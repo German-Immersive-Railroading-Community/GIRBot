@@ -1,8 +1,9 @@
-import mysql.connector as sql
-from decouple import config
 import random as rd
 
+import mysql.connector as sql
+from decouple import config
 from mysql.connector.errors import OperationalError
+
 # Connecting and setting up SQL
 
 
