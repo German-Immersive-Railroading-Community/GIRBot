@@ -28,7 +28,7 @@ class Db_interface:
         )
         self.cursor = self.db.cursor()
 
-    def stat_execute(self, func: function, sql: str, adr: tuple = ()) -> None:
+    def stat_execute(self, func, sql: str, adr: tuple = ()) -> None:
         self.reconnect()
         ok = False
         while not ok:
