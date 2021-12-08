@@ -29,6 +29,7 @@ class Db_interface:
         self.cursor = self.db.cursor()
 
     def stat_execute(self, func: function, sql: str, adr: tuple = ()) -> None:
+        self.reconnect()
         ok = False
         while not ok:
             try:
@@ -58,15 +59,15 @@ class Db_interface:
         return len(self.cursor.fetchall()) == 1
 
     def count_app(self, id, role=None):
-        sql = ""
-        adr = ""
+        self.sql = ""
+        self.adr = ""
         if role == None:
-            sql = "SELECT null FROM Application WHERE member_id = %s"
-            adr = (id,)
+            self.sql = "SELECT null FROM Application WHERE member_id = %s"
+            self.adr = (id,)
         else:
-            sql = "SELECT null FROM Application WHERE member_id = %s AND role = %s"
-            adr = (id, role,)
-        self.stat_execute(self.cursor.execute, sql, adr)
+            self.sql = "SELECT null FROM Application WHERE member_id = %s AND role = %s"
+            self.adr = (id, role,)
+        self.stat_execute(self.cursor.execute, self.sql, self.adr)
         return len(self.cursor.fetchall())
 
     def new_id(self):
@@ -104,16 +105,16 @@ class Db_interface:
         return len(self.cursor.fetchall()) == 1
 
     def vote_for(self, app_id, voter_id, is_in_favor):
-        sql = ""
-        adr = None
+        self.sql = ""
+        self.adr = None
         has_voted = self.has_voted(app_id, voter_id)
         if not has_voted:
-            sql = "INSERT INTO app_vote (app_id,voter_id,is_in_favor) VALUES (%s, %s, %s)"
-            adr = (app_id, voter_id, is_in_favor,)
+            self.sql = "INSERT INTO app_vote (app_id,voter_id,is_in_favor) VALUES (%s, %s, %s)"
+            self.adr = (app_id, voter_id, is_in_favor,)
         else:
-            sql = "UPDATE app_vote SET is_in_favor=%s WHERE app_id = %s AND voter_id = %s"
-            adr = (is_in_favor, app_id, voter_id,)
-        self.stat_execute(self.cursor.execute, sql, adr)
+            self.sql = "UPDATE app_vote SET is_in_favor=%s WHERE app_id = %s AND voter_id = %s"
+            self.adr = (is_in_favor, app_id, voter_id,)
+        self.stat_execute(self.cursor.execute, self.sql, self.adr)
         self.db.commit()
         return has_voted
 
