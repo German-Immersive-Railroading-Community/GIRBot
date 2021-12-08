@@ -15,6 +15,8 @@ head_dev_role_id=814462429185835018
 dev_role_id=709719558189088809
 admin_role_id=690970811410153493
 owner_role_id=690970413781614603
+everyone_role_id=690967067855421470
+builder_role_id=692408904059060234
 
 host=<IP of Database-Server>
 db_user=<The user you want to acces the database with>
