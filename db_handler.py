@@ -16,7 +16,7 @@ class Db_interface:
             password=str(config("db_password")),
             database=str(config("db_name"))
         )
-        self.cursor = self.db.cursor()
+        self.cursor = self.db.cursor(buffered=True)
 
     def reconnect(self) -> None:
         self.db.disconnect()
@@ -26,14 +26,14 @@ class Db_interface:
             password=str(config("db_password")),
             database=str(config("db_name"))
         )
-        self.cursor = self.db.cursor()
+        self.cursor = self.db.cursor(buffered=True)
 
-    def stat_execute(self, func, sql: str, adr: tuple = ()) -> None:
-        self.reconnect()
+    def stat_execute(self, sql_str: str, adr: tuple = ()) -> None:
         ok = False
         while not ok:
             try:
-                func(sql, adr)
+                self.cursor.execute(sql_str, adr)
+                self.db.commit()
                 ok = True
             except OperationalError:
                 self.reconnect()
