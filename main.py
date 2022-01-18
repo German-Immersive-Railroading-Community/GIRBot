@@ -3,10 +3,10 @@ import random as rd
 from os import name
 from sys import prefix
 
-import discord as dc
+import nextcord as dc
 import discord_slash as dcs
 from decouple import config
-from discord.ext import commands as cmd
+from nextcord.ext import commands as cmd
 from discord_slash.model import SlashCommandPermissionType
 from discord_slash.utils.manage_commands import (create_choice, create_option,
                                                  create_permission)
@@ -18,7 +18,7 @@ from variables import *
 
 # Logging
 logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 handler = logging.FileHandler(
     filename='GIRBotLog.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter(
