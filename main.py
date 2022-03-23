@@ -34,7 +34,7 @@ async def on_ready():
 # Commands without DB use
 
 @client.command(
-    name="DevSet",
+    name="devset",
     description="Give someone the Dev-Role... Spooky",
     scope=girc_guild_id,
     options=[
