@@ -137,10 +137,9 @@ async def application(ctx, role, text):
     # TODO Check in Class 'Db_interface' function is_member = True, else cancel with message | HOLDED! Need the register-plugin-side first
     # if not db.is_member(ctx.author.id) == True:
     #    await ctx.send(content="You are not registered! Please register first using our register function!")
-    print(ctx.author.id)
-    if db.count_app(ctx.author.id) > 2:
+    if db.count_app(str(ctx.author.id)) > 2:
         await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", hidden=True)
-    elif db.count_app(ctx.author.id, role=role.id) > 0:
+    elif db.count_app(str(ctx.author.id), role=role.id) > 0:
         await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", hidden=True)
     else:
         app_embed = dc.Embed(
@@ -204,10 +203,5 @@ async def vote(ctx, id, vote):
         dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
         await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
-
-class VoiceState:
-    def __init__(self) -> None:
-        pass
-    dc.api.models.gw.VoiceState = "SomeStuff"
 
 client.start()
