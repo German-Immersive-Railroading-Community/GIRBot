@@ -104,7 +104,7 @@ async def ideas_wishes(ctx, type, text):
         title=type,
         description=text,
         color=rd.randint(0, 0xFFFFFF),
-        author=ctx.author.display_name
+        author=ctx.author.nick
     )
     channel = client.get_channel(sent_idea_channel_id)
     embed_message = await channel.send(embed=idea_embed)
@@ -147,7 +147,7 @@ async def application(ctx, role, text):
             title=role.name,
             description=text,
             color=role.color,
-            author=ctx.author.display_name
+            author=ctx.author.nick
         )
         app_id = db.new_id()
         app_embed.set_footer(text=str(app_id))
