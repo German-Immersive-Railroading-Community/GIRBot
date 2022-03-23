@@ -139,7 +139,7 @@ async def application(ctx, role, text):
     #    await ctx.send(content="You are not registered! Please register first using our register function!")
     if db.count_app(str(ctx.author.id)) > 2:
         await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", hidden=True)
-    elif db.count_app(str(ctx.author.id), role=role.id) > 0:
+    elif db.count_app(str(ctx.author.id), role=str(role.id)) > 0:
         await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", hidden=True)
     else:
         app_embed = dc.Embed(
