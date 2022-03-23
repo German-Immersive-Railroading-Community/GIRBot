@@ -133,11 +133,11 @@ async def ideas_wishes(ctx, type, text):
         )
     ]
 )
-async def application(ctx, role, text="No text has been given!"):
+async def application(ctx, role, text):
     # TODO Check in Class 'Db_interface' function is_member = True, else cancel with message | HOLDED! Need the register-plugin-side first
     # if not db.is_member(ctx.author.id) == True:
     #    await ctx.send(content="You are not registered! Please register first using our register function!")
-
+    print(ctx.author.id)
     if db.count_app(ctx.author.id) > 2:
         await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", hidden=True)
     elif db.count_app(ctx.author.id, role=role.id) > 0:
