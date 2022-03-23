@@ -1,6 +1,9 @@
 # GIRBot
 The DC Bot for GIRC.
 
+## NOTICE
+This currently only works with Python 3.8.6+ but <3.10. It is tested with 3.9.11.
+
 ## .env File
 Here is a template for a .env file. These are the variables you would need to specify:
 ```
