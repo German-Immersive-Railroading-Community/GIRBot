@@ -103,8 +103,9 @@ async def ideas_wishes(ctx, type, text):
     idea_embed = dc.Embed(
         title=type,
         description=text,
-        color=rd.randint(0, 0xFFFFFF)
-    ).set_author(name=ctx.author.display_name)
+        color=rd.randint(0, 0xFFFFFF),
+        author=ctx.author.display_name
+    )
     channel = client.get_channel(sent_idea_channel_id)
     embed_message = await channel.send(embed=idea_embed)
     await embed_message.add_reaction("\N{White Heavy Check Mark}")
@@ -145,8 +146,9 @@ async def application(ctx, role, text):
         app_embed = dc.Embed(
             title=role.name,
             description=text,
-            color=role.colour.value
-        ).set_author(name=ctx.author.display_name)
+            color=role.color,
+            author=ctx.author.display_name
+        )
         app_id = db.new_id()
         app_embed.set_footer(text=str(app_id))
         channel = client.get_channel(sent_app_channel_id)
