@@ -37,6 +37,7 @@ async def on_ready():
     name="devset",
     description="Give someone the Dev-Role... Spooky",
     scope=girc_guild_id,
+    default_permission=False,
     options=[
         dc.Option(
             name="person",
@@ -57,13 +58,6 @@ async def on_ready():
                 dc.Choice(
                     name="English",
                     value=name
-                )
-            ],
-            permissions=[
-                dc.Permission(
-                    id=head_dev_role_id,
-                    type=dc.PermissionType.ROLE,
-                    permmission=True
                 )
             ]
         )
@@ -166,18 +160,7 @@ async def application(ctx, role, text="No text has been given!"):
     name="vote",
     description="Vote for an application.",
     scope=girc_guild_id,
-    permissions=[
-        dc.Permission(
-            id=admin_role_id,
-            type=dc.PermissionType.ROLE,
-            permission=True
-        ),
-        dc.Permission(
-            id=owner_role_id,
-            type=dc.PermissionType.ROLE,
-            permission=True
-        )
-    ],
+    default_permission=False,
     options=[
         dc.Option(
             name="id",
