@@ -205,4 +205,9 @@ async def vote(ctx, id, vote):
         await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
 
+class VoiceState:
+    def __init__(self) -> None:
+        pass
+    dc.api.models.gw.VoiceState = "SomeStuff"
+
 client.start()
