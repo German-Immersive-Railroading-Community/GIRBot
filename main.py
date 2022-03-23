@@ -3,9 +3,8 @@ import random as rd
 from os import name
 from sys import prefix
 
-import nextcord as dc
+import interactions as dc
 from decouple import config
-from nextcord.ext import commands as cmd
 
 from db_handler import Db_interface as Dbi
 from variables import *
@@ -22,11 +21,10 @@ handler.setFormatter(logging.Formatter(
 logger.addHandler(handler)
 
 # Setting Variables
-client = cmd.Bot(command_prefix=bot_prefix, intents=dc.Intents.all())
+client = dc.Client(token)
 db = Dbi()
 
 # Standard shit
-
 
 @client.event
 async def on_ready():
@@ -35,80 +33,74 @@ async def on_ready():
 # Initializing the Slash Commands
 # Commands without DB use
 
-@client.slash_command(name="DevSet", description="Give someone the Dev-Role... Spooky", guild_ids=[girc_guild_id], default_permission=False)
-async def devset(
-    
-)
-
-
-@slash.slash(
+@client.command(
     name="DevSet",
     description="Give someone the Dev-Role... Spooky",
-    guild_ids=guild_id,
-    default_permission=False,
-    permissions={
-        girc_guild_id: [
-                create_permission(head_dev_role_id,
-                                  SlashCommandPermissionType.ROLE, True),
-        ]
-    },
+    scope=girc_guild_id,
     options=[
-        create_option(
+        dc.Option(
             name="person",
             description="The Person you wanna give power to.",
-            option_type=6,
+            type=dc.OptionType.USER,
             required=True
         ),
-        create_option(
+        dc.Option(
             name="language",
             description="The language of the person.",
-            option_type=3,
+            type=dc.OptionType.STRING,
             required=True,
             choices=[
-                create_choice(
-                        name="German",
-                        value="German"
+                dc.Choice(
+                    name="German",
+                    value=name
                 ),
-                create_choice(
+                dc.Choice(
                     name="English",
-                    value="English"
+                    value=name
+                )
+            ],
+            permissions=[
+                dc.Permission(
+                    id=head_dev_role_id,
+                    type=dc.PermissionType.ROLE,
+                    permmission=True
                 )
             ]
         )
     ]
 )
-#async def devset(ctx, person, language):
-#    await person.add_roles(ctx.guild.get_role(role_id=dev_role_id))
-#    await person.add_roles(dc.utils.get(ctx.guild.roles,
-#                                        name=language + " Member"))
-#    await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", hidden=True)
+async def devset(ctx, person, language):
+    await person.add_roles(ctx.guild.get_role(role_id=dev_role_id))
+    await person.add_roles(dc.utils.get(ctx.guild.roles,
+                                        name=language + " Member"))
+    await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", hidden=True)
 
 
-@slash.slash(
+@client.command(
     name="Idea",
     description="Send us a wish or idea you have!",
-    guild_ids=guild_id,
+    scope=girc_guild_id,
     options=[
-        create_option(
+        dc.Option(
             name="type",
-            description="Is it an idea or an wish?",
-            option_type=3,
+            description="Is it an idea or wish?",
+            type=dc.OptionType.STRING,
             required=True,
             choices=[
-                create_choice(
+                dc.Choice(
                     name="Idea",
-                    value="Idea"
+                    value=name
                 ),
-                create_choice(
+                dc.Choice(
                     name="Wish",
-                    value="Wish"
+                    value=name
                 )
             ]
         ),
-        create_option(
+        dc.Option(
             name="text",
-            description="Your idea or wish you want to tell us.",
-            option_type=3,
+            description="Your idea or wish you want to tell us",
+            type=dc.OptionType.STRING,
             required=True
         )
     ]
@@ -125,25 +117,25 @@ async def ideas_wishes(ctx, type, text):
     await embed_message.add_reaction("\N{No Entry Sign}")
     await ctx.send(content=f"Thank you! Your {type} has been sent to us.", hidden=True)
 
+
 # Commands with DB use
 
-
-@slash.slash(
+@client.command(
     name="Apply",
-    description="Apply for a Role on the server.",
-    guild_ids=guild_id,
+    description="Apply for a role on the server.",
+    scope=girc_guild_id,
     options=[
-        create_option(
+        dc.Option(
             name="role",
             description="The role you want to apply for.",
-            option_type=8,
+            type=dc.OptionType.ROLE,
             required=True
         ),
-        create_option(
+        dc.Option(
             name="text",
-            description="A nice little text why you want the role.",
-            option_type=3,
-            required=False
+            description="A nice little text why you want the role",
+            type=dc.OptionType.STRING,
+            required=True
         )
     ]
 )
@@ -170,32 +162,33 @@ async def application(ctx, role, text="No text has been given!"):
         await ctx.send(content="Thank you for applying! You will be notified when we processed it.", hidden=True)
 
 
-@slash.slash(
+@client.command(
     name="Vote",
-    description="Vote for a application",
-    guild_ids=guild_id,
-    default_permission=False,
-    permissions={
-        girc_guild_id: [
-            create_permission(admin_role_id,
-                              SlashCommandPermissionType.ROLE, True
-                              ),
-            create_permission(owner_role_id,
-                              SlashCommandPermissionType.ROLE, True
-                              )
-        ]
-    },
+    description="Vote for an application.",
+    scope=girc_guild_id,
+    permissions=[
+        dc.Permission(
+            id=admin_role_id,
+            type=dc.PermissionType.ROLE,
+            permission=True
+        ),
+        dc.Permission(
+            id=owner_role_id,
+            type=dc.PermissionType.ROLE,
+            permission=True
+        )
+    ],
     options=[
-        create_option(
+        dc.Option(
             name="id",
             description="The ID of the application (see footer).",
-            option_type=4,
+            type=dc.OptionType.INTEGER,
             required=True
         ),
-        create_option(
+        dc.Option(
             name="vote",
             description="Wether or not the application is okay with you.",
-            option_type=5,
+            type=dc.OptionType.BOOLEAN,
             required=True
         )
     ]
@@ -229,4 +222,4 @@ async def vote(ctx, id, vote):
         await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
 
-client.run(token)
+client.start()
