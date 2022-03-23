@@ -58,7 +58,7 @@ class Db_interface:
     def count_app(self, user_id, role=None):
         sql_str = ""
         adr = ""
-        if role is None:
+        if role == None:
             sql_str = "SELECT null FROM Application WHERE member_id = %s"
             adr = (user_id,)
         else:
