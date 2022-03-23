@@ -77,7 +77,7 @@ async def devset(ctx, person, language):
 
 
 @client.command(
-    name="Idea",
+    name="idea",
     description="Send us a wish or idea you have!",
     scope=girc_guild_id,
     options=[
@@ -121,7 +121,7 @@ async def ideas_wishes(ctx, type, text):
 # Commands with DB use
 
 @client.command(
-    name="Apply",
+    name="apply",
     description="Apply for a role on the server.",
     scope=girc_guild_id,
     options=[
@@ -163,7 +163,7 @@ async def application(ctx, role, text="No text has been given!"):
 
 
 @client.command(
-    name="Vote",
+    name="vote",
     description="Vote for an application.",
     scope=girc_guild_id,
     permissions=[
