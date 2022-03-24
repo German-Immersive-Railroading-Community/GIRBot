@@ -143,16 +143,14 @@ async def application(ctx, role, text):
     elif db.count_app(str(ctx.author.id), role=str(role.id)) > 0:
         await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", hidden=True)
     else:
+        app_id = db.new_id()
         app_embed = dc.Embed(
             title=role.name,
             description=text,
             color=role.color,
-            fields=[
-                dc.EmbedAuthor(name=ctx.author.nick)
-            ]
+            author=dc.EmbedAuthor(name=ctx.author.nick),
+            footer=dc.EmbedFooter(text=str(app_id))
         )
-        app_id = db.new_id()
-        app_embed.set_footer(text=str(app_id))
         channel = client.get_channel(sent_app_channel_id)
         embed_message = await channel.send(embed=app_embed)
         db.add_app(ctx.author.id, role.id, embed_message.id, app_id=app_id)
