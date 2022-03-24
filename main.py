@@ -154,7 +154,7 @@ async def application(ctx, role, text):
         #channel = client.get_channel(sent_app_channel_id)
         # If this works I'm gonna cry
         raw_channel = await client._http.get_channel(sent_app_channel_id)
-        channel = dc.Channel(**data, _client=client._http)
+        channel = dc.Channel(**raw_channel, _client=client._http)
         embed_message = await channel.send(embed=app_embed)
         db.add_app(ctx.author.id, role.id, embed_message.id, app_id=app_id)
         await ctx.send(content="Thank you for applying! You will be notified when we processed it.", hidden=True)
