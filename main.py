@@ -164,7 +164,7 @@ async def application(ctx, role, text):
     name="vote",
     description="Vote for an application.",
     scope=girc_guild_id,
-    default_permission=False,
+    default_permission=True,
     options=[
         dc.Option(
             name="id",
