@@ -106,7 +106,7 @@ async def ideas_wishes(ctx, type, text):
         color=rd.randint(0, 0xFFFFFF),
         author=dc.EmbedAuthor(name=str(ctx.author.id))
     )
-    raw_channel = await client._http.get_channel(sent_app_channel_id)
+    raw_channel = await client._http.get_channel(sent_idea_channel_id)
     channel = dc.Channel(**raw_channel, _client=client._http)
     embed_message = await channel.send(embeds=idea_embed)
     await client._http.create_reaction(int(channel.id), int(embed_message.id), "\N{White Heavy Check Mark}")
