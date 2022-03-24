@@ -104,7 +104,7 @@ async def ideas_wishes(ctx, type, text):
         title=type,
         description=text,
         color=rd.randint(0, 0xFFFFFF),
-        author=interactions.EmbedAuthor(name=ctx.author.id)
+        author=dc.EmbedAuthor(name=ctx.author.id)
     )
     raw_channel = await client._http.get_channel(sent_app_channel_id)
     channel = dc.Channel(**raw_channel, _client=client._http)
