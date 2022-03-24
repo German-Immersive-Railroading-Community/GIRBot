@@ -67,7 +67,7 @@ async def devset(ctx, person, language):
     girc_guild = client._http.get_guild(girc_guild_id)
     await girc_guild.add_member_role(dev_role_id, int(person.id))
     await girc_guild.add_member_role(get_role_from_name(language + " Member").id, int(person.id))
-    await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", ephermal=True)
+    await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", ephemeral=True)
 
 
 @client.command(
@@ -111,7 +111,7 @@ async def ideas_wishes(ctx, type, text):
     embed_message = await channel.send(embeds=idea_embed)
     await client._http.create_reaction(int(channel.id), int(embed_message.id), "\N{White Heavy Check Mark}")
     await client._http.create_reaction(int(channel.id), int(embed_message.id), "\N{No Entry Sign}")
-    await ctx.send(content=f"Thank you! Your {type} has been sent to us.", ephermal=True)
+    await ctx.send(content=f"Thank you! Your {type} has been sent to us.", ephemeral=True)
 
 
 # Commands with DB use
@@ -140,9 +140,9 @@ async def application(ctx, role, text):
     # if not db.is_member(ctx.author.id) == True:
     #    await ctx.send(content="You are not registered! Please register first using our register function!")
     if db.count_app(str(ctx.author.id)) > 2:
-        await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", ephermal=True)
+        await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", ephemeral=True)
     elif db.count_app(str(ctx.author.id), role=str(role.id)) > 0:
-        await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", ephermal=True)
+        await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", ephemeral=True)
     else:
         app_id = db.new_id()
         app_embed = dc.Embed(
@@ -157,7 +157,7 @@ async def application(ctx, role, text):
         channel = dc.Channel(**raw_channel, _client=client._http)
         embed_message = await channel.send(embeds=app_embed)
         db.add_app(str(ctx.author.id), str(role.id), str(embed_message.id), app_id=app_id)
-        await ctx.send(content="Thank you for applying! You will be notified when we processed it.", ephermal=True)
+        await ctx.send(content="Thank you for applying! You will be notified when we processed it.", ephemeral=True)
 
 
 @client.command(
@@ -182,10 +182,10 @@ async def application(ctx, role, text):
 )
 async def vote(ctx, id, vote):
     if not ctx.channel.id == sent_app_channel_id:
-        await ctx.send(content="This is the wrong channel!", ephermal=True)
+        await ctx.send(content="This is the wrong channel!", ephemeral=True)
         return
     if db.check_id_free(id):
-        await ctx.send(content="This App ID does not exist!", ephermal=True)
+        await ctx.send(content="This App ID does not exist!", ephemeral=True)
         return
     db.vote_for(id, str(ctx.author.id), vote)
     await ctx.send(content=f"You succesfully voted for {id}.")
@@ -218,7 +218,7 @@ async def vote(ctx, id, vote):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    await ctx.send(content="Nothing to see here!")
+    await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 async def get_role_from_name(role_name, guild_id = girc_guild_id):
     """This is a helper function to get a Role Object based on the name of the role"""
