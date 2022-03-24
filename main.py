@@ -64,10 +64,12 @@ async def on_ready():
     ]
 )
 async def devset(ctx, person, language):
-    await person.add_roles(ctx.guild.get_role(role_id=dev_role_id))
+    girc_guild = client._http.get_guild(girc_guild_id)
+    await girc_guild.add_member_role(dev_role_id, int(person.id))
+    #TODO Change this to add_member_role
     await person.add_roles(dc.utils.get(ctx.guild.roles,
                                         name=language + " Member"))
-    await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", hidden=True)
+    await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", ephermal=True)
 
 
 @client.command(
@@ -104,13 +106,14 @@ async def ideas_wishes(ctx, type, text):
         title=type,
         description=text,
         color=rd.randint(0, 0xFFFFFF),
-        author=ctx.author.nick
+        author=interactions.EmbedAuthor(name=ctx.author.id)
     )
-    channel = client.get_channel(sent_idea_channel_id)
-    embed_message = await channel.send(embed=idea_embed)
-    await embed_message.add_reaction("\N{White Heavy Check Mark}")
-    await embed_message.add_reaction("\N{No Entry Sign}")
-    await ctx.send(content=f"Thank you! Your {type} has been sent to us.", hidden=True)
+    raw_channel = await client._http.get_channel(sent_app_channel_id)
+    channel = dc.Channel(**raw_channel, _client=client._http)
+    embed_message = await channel.send(embeds=idea_embed)
+    await client._http.create_reaction(int(channel.id), int(embed_message.id), "\N{White Heavy Check Mark}")
+    await client._http.create_reaction(int(channel.id), int(embed_message.id), "\N{No Entry Sign}")
+    await ctx.send(content=f"Thank you! Your {type} has been sent to us.", ephermal=True)
 
 
 # Commands with DB use
@@ -139,9 +142,9 @@ async def application(ctx, role, text):
     # if not db.is_member(ctx.author.id) == True:
     #    await ctx.send(content="You are not registered! Please register first using our register function!")
     if db.count_app(str(ctx.author.id)) > 2:
-        await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", hidden=True)
+        await ctx.send(content="You already have 2 Applications open! Please wait for them to be processed.", ephermal=True)
     elif db.count_app(str(ctx.author.id), role=str(role.id)) > 0:
-        await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", hidden=True)
+        await ctx.send(content="You already have a pending application for this role! Please wait for it to be processed.", ephermal=True)
     else:
         app_id = db.new_id()
         app_embed = dc.Embed(
@@ -151,13 +154,12 @@ async def application(ctx, role, text):
             author=dc.EmbedAuthor(name=ctx.author.nick),
             footer=dc.EmbedFooter(text=str(app_id))
         )
-        #channel = client.get_channel(sent_app_channel_id)
         # If this works I'm gonna cry
         raw_channel = await client._http.get_channel(sent_app_channel_id)
         channel = dc.Channel(**raw_channel, _client=client._http)
         embed_message = await channel.send(embeds=app_embed)
         db.add_app(str(ctx.author.id), str(role.id), str(embed_message.id), app_id=app_id)
-        await ctx.send(content="Thank you for applying! You will be notified when we processed it.", hidden=True)
+        await ctx.send(content="Thank you for applying! You will be notified when we processed it.", ephermal=True)
 
 
 @client.command(
@@ -182,31 +184,34 @@ async def application(ctx, role, text):
 )
 async def vote(ctx, id, vote):
     if not ctx.channel.id == sent_app_channel_id:
-        await ctx.send(content="This is the wrong channel!", hidden=True)
+        await ctx.send(content="This is the wrong channel!", ephermal=True)
         return
     if db.check_id_free(id):
-        await ctx.send(content="This App ID does not exist!", hidden=True)
+        await ctx.send(content="This App ID does not exist!", ephermal=True)
         return
-    db.vote_for(id, ctx.author.id, vote)
+    db.vote_for(id, str(ctx.author.id), vote)
     await ctx.send(content=f"You succesfully voted for {id}.")
     votes = db.check_vote(id)
-    voters = len([voter for voter in client.get_channel(sent_app_channel_id).members
-                  if ctx.guild.get_role(role_id=admin_role_id) in voter.roles
-                  or ctx.guild.get_role(owner_role_id) in voter.roles])
+    raw_channel = await client._http.get_channel(sent_app_channel_id)
+    sent_app_channel = dc.Channel(**raw_channel, _client=client._http)
+    girc_guild = client._http.get_guild(girc_guild_id)
+    voters = len([voter for voter in sent_app_channel.recipients
+                  if await girc_guild.get_role(role_id=admin_role_id) in voter.roles
+                  or await girc_guild.get_role(role_id=owner_role_id) in voter.roles])
     app_data = db.get_app(id)
-    app_message = await ctx.channel.fetch_message(app_data["message_id"])
+    app_message = await sent_app_channel.get_message(app_data["message_id"])
+    role_to_give = girc_guild.get_role(role_id=app_data["role"])
     if votes["in_favor"] > voters//2:
-        role_to_give = ctx.guild.get_role(role_id=app_data["role"])
-        await ctx.guild.get_member(app_data["member_id"]).add_roles(role_to_give)
-        await app_message.add_reaction("\N{White Heavy Check Mark}")
+        await girc_guild.add_member_role(role_to_give, app_data["member_id"])
+        await client._http.create_reaction(int(sent_app_channel.id), int(app_data["message_id"].id), "\N{White Heavy Check Mark}")
         dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
-        await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been accepted! Have fun with your new role.")
+        await girc_guild.get_member(app_data["member_id"]).send(content=f"Hey you! Your application for the role {role_to_give.name} has been accepted! Have fun with your new role.")
         db.del_app(id)
     elif votes["against"] > voters//2:
-        role_to_give = ctx.guild.get_role(role_id=app_data["role"])
         await app_message.add_reaction("\N{No Entry Sign}")
+        await client._http.create_reaction(int(sent_app_channel.id), int(app_data["message_id"].id), "\N{No Entry Sign}")
         dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
-        await dms.send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
+        await girc_guild.get_member(app_data["member_id"]).send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
 
 client.start()
