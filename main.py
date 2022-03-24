@@ -180,8 +180,8 @@ async def application(ctx, role, text):
         )
     ]
 )
-async def vote(ctx, id, vote):
-    if not ctx.channel.id == sent_app_channel_id:
+async def vote(ctx, id, vote=True):
+    if not int(ctx.channel_id) == int(sent_app_channel_id):
         await ctx.send(content="This is the wrong channel!", ephemeral=True)
         return
     if db.check_id_free(id):
