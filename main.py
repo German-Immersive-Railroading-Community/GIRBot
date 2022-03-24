@@ -83,11 +83,11 @@ async def devset(ctx, person, language):
             choices=[
                 dc.Choice(
                     name="Idea",
-                    value=name
+                    value="Idea"
                 ),
                 dc.Choice(
                     name="Wish",
-                    value=name
+                    value="Wish"
                 )
             ]
         ),
@@ -104,7 +104,7 @@ async def ideas_wishes(ctx, type, text):
         title=str(type),
         description=text,
         color=rd.randint(0, 0xFFFFFF),
-        author=dc.EmbedAuthor(name=str(ctx.author.id))
+        author=dc.EmbedAuthor(name=str(ctx.author.nick))
     )
     raw_channel = await client._http.get_channel(sent_idea_channel_id)
     channel = dc.Channel(**raw_channel, _client=client._http)
