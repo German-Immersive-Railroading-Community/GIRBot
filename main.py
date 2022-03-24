@@ -220,6 +220,6 @@ async def vote(ctx, id, vote):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    ctx.send(content=await client._http.get_all_roles(girc_guild_id), ephermal=True)
+    await ctx.send(content=await client._http.get_all_roles(girc_guild_id), ephermal=True)
 
 client.start()
