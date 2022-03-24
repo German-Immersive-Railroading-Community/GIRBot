@@ -66,7 +66,7 @@ async def on_ready():
 async def devset(ctx, person, language):
     girc_guild = client._http.get_guild(girc_guild_id)
     await girc_guild.add_member_role(dev_role_id, int(person.id))
-    #TODO Change this to add_member_role
+    await girc_guild.add_member_role()
     await person.add_roles(dc.utils.get(ctx.guild.roles,
                                         name=language + " Member"))
     await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", ephermal=True)
@@ -213,5 +213,13 @@ async def vote(ctx, id, vote):
         dms = await ctx.guild.get_member(app_data["member_id"]).create_dm()
         await girc_guild.get_member(app_data["member_id"]).send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
+
+@client.command(
+    name="test",
+    description="Command to test stuff",
+    scope=girc_guild_id,
+)
+async def test(ctx):
+    ctx.send(content=client._http.get_all_roles(girc_guild_id), ephermal=True)
 
 client.start()
