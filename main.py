@@ -221,6 +221,7 @@ async def vote(ctx, id, vote):
 )
 async def test(ctx):
     stuff = await client._http.get_all_roles(girc_guild_id)
-    await ctx.send(content=stuff)
+    print(stuff)
+    await ctx.send(content="Worked?")
 
 client.start()
