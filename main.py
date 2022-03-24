@@ -101,10 +101,10 @@ async def devset(ctx, person, language):
 )
 async def ideas_wishes(ctx, type, text):
     idea_embed = dc.Embed(
-        title=type,
+        title=str(type),
         description=text,
         color=rd.randint(0, 0xFFFFFF),
-        author=dc.EmbedAuthor(name=ctx.author.id)
+        author=dc.EmbedAuthor(name=str(ctx.author.id))
     )
     raw_channel = await client._http.get_channel(sent_app_channel_id)
     channel = dc.Channel(**raw_channel, _client=client._http)
