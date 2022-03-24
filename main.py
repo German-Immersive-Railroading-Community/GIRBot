@@ -66,9 +66,7 @@ async def on_ready():
 async def devset(ctx, person, language):
     girc_guild = client._http.get_guild(girc_guild_id)
     await girc_guild.add_member_role(dev_role_id, int(person.id))
-    await girc_guild.add_member_role()
-    await person.add_roles(dc.utils.get(ctx.guild.roles,
-                                        name=language + " Member"))
+    await girc_guild.add_member_role(get_role_from_name(language + " Member").id, int(person.id))
     await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", ephermal=True)
 
 
@@ -194,7 +192,7 @@ async def vote(ctx, id, vote):
     votes = db.check_vote(id)
     raw_channel = await client._http.get_channel(sent_app_channel_id)
     sent_app_channel = dc.Channel(**raw_channel, _client=client._http)
-    girc_guild = client._http.get_guild(girc_guild_id)
+    girc_guild = await client._http.get_guild(girc_guild_id)
     voters = len([voter for voter in sent_app_channel.recipients
                   if await girc_guild.get_role(role_id=admin_role_id) in voter.roles
                   or await girc_guild.get_role(role_id=owner_role_id) in voter.roles])
@@ -220,8 +218,15 @@ async def vote(ctx, id, vote):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    stuff = await client._http.get_all_roles(girc_guild_id)
-    print(stuff)
-    await ctx.send(content="Worked?")
+    await ctx.send(content="Nothing to see here!")
+
+async def get_role_from_name(role_name, guild_id = girc_guild_id):
+    """This is a helper function to get a Role Object based on the name of the role"""
+    roles = await client._http.get_all_roles(guild_id)
+    i = 0
+    for role in roles:
+        if role["name"] == role_name:
+            guild_object = await client._http.get_guild(girc_guild_id)
+            return await guild_object.get_role(int(role["id"]))
 
 client.start()
