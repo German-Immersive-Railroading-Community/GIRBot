@@ -147,7 +147,9 @@ async def application(ctx, role, text):
             title=role.name,
             description=text,
             color=role.color,
-            author=ctx.author.nick
+            fields=[
+                dc.EmbedAuthor(name=ctx.author.nick)
+            ]
         )
         app_id = db.new_id()
         app_embed.set_footer(text=str(app_id))
