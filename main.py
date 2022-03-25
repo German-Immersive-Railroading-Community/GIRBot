@@ -221,7 +221,7 @@ async def vote(ctx, id, vote=True):
 async def test(ctx):
     raw_channel = await client._http.get_channel(sent_app_channel_id)
     sent_app_channel = dc.Channel(**raw_channel, _client=client._http)
-    print(sent_app_channel.member_count)
+    print(sent_app_channel.name)
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 async def get_role_from_name(role_name, guild_id = girc_guild_id):
