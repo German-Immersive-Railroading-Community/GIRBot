@@ -212,12 +212,16 @@ async def vote(ctx, id, vote=True):
         await girc_guild.get_member(app_data["member_id"]).send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
 
+
 @client.command(
     name="test",
     description="Command to test stuff",
     scope=girc_guild_id,
 )
 async def test(ctx):
+    raw_channel = await client._http.get_channel(sent_app_channel_id)
+    sent_app_channel = dc.Channel(**raw_channel, _client=client._http)
+    print(sent_app_channel.member_count)
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 async def get_role_from_name(role_name, guild_id = girc_guild_id):
