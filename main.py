@@ -237,7 +237,7 @@ async def vote(ctx, id, vote):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    print(ctx.data, ctx.type, ctx.data.type)
+    print(int(ctx.user.id))
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 async def get_role_from_name(role_name, guild_id = girc_guild_id):
