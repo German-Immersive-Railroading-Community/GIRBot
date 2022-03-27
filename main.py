@@ -182,7 +182,7 @@ async def application(ctx, role, text):
                     name="Approve",
                     value=True
                 ),
-                dc.Option(
+                dc.Choice(
                     name="Decline",
                     value=False
                 )
