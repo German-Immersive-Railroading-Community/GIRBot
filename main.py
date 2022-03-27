@@ -220,6 +220,7 @@ async def vote(ctx, id, vote):
             return
         role_names = []
         for r in ctx.author.roles:
+            r = await girc_guild.get_role(r)
             role_names.append(r.name)
         if not app_role.name in role_names:
             await ctx.send(content="You are not allowed to vote for that role!")
