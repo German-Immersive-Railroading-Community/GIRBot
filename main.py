@@ -180,17 +180,18 @@ async def application(ctx, role, text):
             choices=[
                 dc.Choice(
                     name="Approve",
-                    value=True
+                    value="True"
                 ),
                 dc.Choice(
                     name="Decline",
-                    value=False
+                    value="False"
                 )
             ]
         )
     ]
 )
 async def vote(ctx, id, vote):
+    vote = True if vote == "True" else False
     # Checking if the channel and command usage is correct and the user
     # is allowed to vote on that specific role
     if not int(ctx.channel_id) == int(sent_app_channel_id):
