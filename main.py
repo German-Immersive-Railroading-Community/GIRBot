@@ -254,7 +254,7 @@ async def vote(ctx, id, vote):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    print(ctx.guild)
+    print(await client._http.get_guild(girc_guild_id))
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 
