@@ -256,7 +256,7 @@ async def vote(ctx, id, vote):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    # print()
+    print(head_voters[709719558189088809][0])
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 
