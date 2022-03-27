@@ -248,11 +248,11 @@ async def vote(ctx, id, vote):
 
     # giving the user the role and user feedback
     if not int(app_role_id) in head_voters.keys():
-        accept_app() if vote else decline_app()
+        await accept_app() if vote else decline_app()
     elif votes["in_favor"] >= head_voters[app_role_id][1]//2:
-        accept_app()
+        await accept_app()
     elif votes["against"] >= head_voters[app_role_id][1]//2:
-        decline_app()
+        await decline_app()
 
 
 @client.command(
