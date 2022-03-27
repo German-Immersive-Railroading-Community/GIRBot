@@ -237,13 +237,13 @@ async def vote(ctx, id, vote):
     async def decline_app():
         await app_message.add_reaction("\N{No Entry Sign}")
         await client._http.create_reaction(int(sent_app_channel.id), int(app_data["message_id"]), "\N{No Entry Sign}")
-        await girc_guild.get_member(app_data["member_id"]).send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
+        await girc_guild.get_member(app_data["member_id"]).send(f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
         db.del_app(id)
 
     async def accept_app():
         await girc_guild.add_member_role(role_to_give, app_data["member_id"])
         await client._http.create_reaction(int(sent_app_channel.id), int(app_data["message_id"]), "\N{White Heavy Check Mark}")
-        await girc_guild.get_member(app_data["member_id"]).send(content=f"Hey you! Your application for the role {role_to_give.name} has been accepted! Have fun with your new role.")
+        await girc_guild.get_member(app_data["member_id"]).send(f"Hey you! Your application for the role {role_to_give.name} has been accepted! Have fun with your new role.")
         db.del_app(id)
 
     # giving the user the role and user feedback
@@ -263,7 +263,7 @@ async def vote(ctx, id, vote):
 async def test(ctx):
     raw_girc_guild = await client._http.get_guild(girc_guild_id)
     girc_guild = dc.Guild(**raw_girc_guild, _client=client._http)
-    role =  await girc_guild.get_role(head_voters[709719558189088809][0])
+    role = await girc_guild.get_role(head_voters[709719558189088809][0])
     print(role.name)
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
