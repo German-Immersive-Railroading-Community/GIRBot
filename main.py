@@ -214,10 +214,14 @@ async def vote(ctx, id, vote):
     app_data = db.get_app(id)
     app_role_id = app_data["role"]
     if int(app_role_id) in head_voters.keys():
+        app_role = await girc_guild.get_role(head_voters[app_role_id][0])
         if app_role_id == pr_role_id and ctx.author.id != head_pr_user_id:
             await ctx.send(content="You are not allowed to vote for that role!")
             return
-        if not await girc_guild.get_role(head_voters[app_role_id][0]) in ctx.author.roles:
+        role_names = []
+        for r in ctx.author.roles:
+            role_names.append(r.name)
+        if not app_role.name in role_names:
             await ctx.send(content="You are not allowed to vote for that role!")
             return
 
