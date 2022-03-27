@@ -231,7 +231,7 @@ async def vote(ctx, id, vote):
     await ctx.send(content=f"You succesfully voted for {id}.")
     votes = db.check_vote(id)
     app_message = await sent_app_channel.get_message(app_data["message_id"])
-    role_to_give = girc_guild.get_role(role_id=app_role_id)
+    role_to_give = await girc_guild.get_role(role_id=app_role_id)
 
     # Some functions so the part above looks better
     async def decline_app():
