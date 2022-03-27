@@ -258,7 +258,8 @@ async def vote(ctx, id, vote):
 async def test(ctx):
     raw_girc_guild = await client._http.get_guild(girc_guild_id)
     girc_guild = dc.Guild(**raw_girc_guild, _client=client._http)
-    print(await girc_guild.get_role(head_voters[709719558189088809][0]).name)
+    role =  await girc_guild.get_role(head_voters[709719558189088809][0])
+    print(role.name)
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 
