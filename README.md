@@ -24,6 +24,9 @@ head_builder_role_id=692409029384994938
 pr_role_id=804648015176269854
 head_pr_user_id=<ID of a DC-User>
 
+count_head_dev=<How many head devs there are>
+count_head_builder=<How many head builder there are>
+
 host=<IP of Database-Server>
 db_user=<The user you want to access the database with>
 db_password=<The password for this user>

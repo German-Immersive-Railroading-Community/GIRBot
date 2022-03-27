@@ -69,8 +69,8 @@ class Db_interface:
         return len(self.cursor.fetchall())
 
     def new_id(self):
+        """Create new id with checksum%8==0"""
         for i in range(100):
-            # Create new id with checksum%8==0
             app_id = rd.randint(100, 999)
             qs = sum(int(digit) for digit in str(app_id))
             checkd = 8-qs % 8
@@ -80,7 +80,7 @@ class Db_interface:
         raise Exception("No free application Id found")
 
     def check_id_free(self, app_id):
-        # check if id already exist
+        """Check if id already exist"""
         self.stat_execute("SELECT null FROM Application WHERE id = %s", (app_id,))
         return len(self.cursor.fetchall()) == 0
 
@@ -121,6 +121,7 @@ class Db_interface:
             return {"member_id": member_id, "role": role, "message_id": message_id}
 
 
+# This is only for testing purposes
 if __name__ == "__main__":
     db_t = Db_interface()
     db_t.del_app(0)

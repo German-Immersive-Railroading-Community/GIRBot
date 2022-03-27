@@ -17,9 +17,12 @@ head_builder_role_id = int(config("head_builder_role_id"))
 pr_role_id = int(config("pr_role_id"))
 head_pr_user_id = int(config("head_pr_user_id"))
 
-voters = {
-    dev_role_id : head_dev_role_id,
-    builder_role_id : head_builder_role_id,
+count_head_dev = int(config("count_head_dev"))
+count_head_builder = int(config("count_head_builder"))
+
+head_voters = {
+    dev_role_id : [head_dev_role_id, count_head_dev],
+    builder_role_id : [head_builder_role_id, count_head_builder],
     pr_role_id : head_pr_user_id
 }
 
