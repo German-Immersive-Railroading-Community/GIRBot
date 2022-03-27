@@ -66,7 +66,8 @@ async def on_ready():
     ]
 )
 async def devset(ctx, person, language):
-    girc_guild = client._http.get_guild(girc_guild_id)
+    raw_girc_guild = await client._http.get_guild(girc_guild_id)
+    girc_guild = dc.Guild(**raw_girc_guild, _client=client._http)
     await girc_guild.add_member_role(dev_role_id, int(person.id))
     await girc_guild.add_member_role(get_role_from_name(language + " Member").id, int(person.id))
     await ctx.send(content=f"Dem Nutzer {person.display_name} wurde die Developer-Rolle gegeben!", ephemeral=True)
@@ -199,7 +200,8 @@ async def vote(ctx, id, vote):
     vote = True if vote == "True" else False
     raw_channel = await client._http.get_channel(sent_app_channel_id)
     sent_app_channel = dc.Channel(**raw_channel, _client=client._http)
-    girc_guild = await client._http.get_guild(girc_guild_id)
+    raw_girc_guild = await client._http.get_guild(girc_guild_id)
+    girc_guild = dc.Guild(**raw_girc_guild, _client=client._http)
 
     # Checking if the channel and command usage is correct and the user
     # is allowed to vote on that specific role
@@ -254,9 +256,7 @@ async def vote(ctx, id, vote):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    raw_guild = await client._http.get_guild(girc_guild_id)
-    guild_object = dc.Guild(**raw_guild, _client=client._http)
-    print(guild_object)
+    # print()
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 
@@ -268,7 +268,8 @@ async def get_role_from_name(role_name, guild_id=girc_guild_id):
     i = 0
     for role in roles:
         if role["name"] == role_name:
-            guild_object = await client._http.get_guild(girc_guild_id)
+            raw_girc_guild = await client._http.get_guild(girc_guild_id)
+            guild_object = dc.Guild(**raw_girc_guild, _client=client._http)
             return await guild_object.get_role(int(role["id"]))
 
 client.start()
