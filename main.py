@@ -233,14 +233,6 @@ async def vote(ctx, id, vote):
     app_message = await sent_app_channel.get_message(app_data["message_id"])
     role_to_give = girc_guild.get_role(role_id=app_role_id)
 
-    # giving the user the role and user feedback
-    if not int(app_role_id) in head_voters.keys():
-        accept_app() if vote else decline_app()
-    elif votes["in_favor"] >= head_voters[app_role_id][1]//2:
-        accept_app()
-    elif votes["against"] >= head_voters[app_role_id][1]//2:
-        decline_app()
-
     # Some functions so the part above looks better
     async def decline_app():
         await app_message.add_reaction("\N{No Entry Sign}")
@@ -253,6 +245,14 @@ async def vote(ctx, id, vote):
         await client._http.create_reaction(int(sent_app_channel.id), int(app_data["message_id"].id), "\N{White Heavy Check Mark}")
         await girc_guild.get_member(app_data["member_id"]).send(content=f"Hey you! Your application for the role {role_to_give.name} has been accepted! Have fun with your new role.")
         db.del_app(id)
+
+    # giving the user the role and user feedback
+    if not int(app_role_id) in head_voters.keys():
+        accept_app() if vote else decline_app()
+    elif votes["in_favor"] >= head_voters[app_role_id][1]//2:
+        accept_app()
+    elif votes["against"] >= head_voters[app_role_id][1]//2:
+        decline_app()
 
 
 @client.command(
