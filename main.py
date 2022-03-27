@@ -175,18 +175,33 @@ async def application(ctx, role, text):
         dc.Option(
             name="vote",
             description="Wether or not the application is okay with you.",
-            type=dc.OptionType.BOOLEAN,
-            required=True
+            type=dc.OptionType.STRING,
+            required=True,
+            choices=[
+                dc.Choice(
+                    name="Approve",
+                    value=True
+                ),
+                dc.Option(
+                    name="Decline",
+                    value=False
+                )
+            ]
         )
     ]
 )
-async def vote(ctx, id, vote=True):
+async def vote(ctx, id, vote):
+    # Checking if the channel and command usage is correct and the user
+    # is allowed to vote on that specific role
     if not int(ctx.channel_id) == int(sent_app_channel_id):
         await ctx.send(content="This is the wrong channel!", ephemeral=True)
         return
     if db.check_id_free(id):
         await ctx.send(content="This App ID does not exist!", ephemeral=True)
         return
+    #if not 
+
+    # Setting/Getting some stuff to process further
     db.vote_for(id, str(ctx.author.id), vote)
     await ctx.send(content=f"You succesfully voted for {id}.")
     votes = db.check_vote(id)
@@ -199,6 +214,8 @@ async def vote(ctx, id, vote=True):
     app_data = db.get_app(id)
     app_message = await sent_app_channel.get_message(app_data["message_id"])
     role_to_give = girc_guild.get_role(role_id=app_data["role"])
+
+    # giving the user the role and user feedback
     if votes["in_favor"] > voters//2:
         await girc_guild.add_member_role(role_to_give, app_data["member_id"])
         await client._http.create_reaction(int(sent_app_channel.id), int(app_data["message_id"].id), "\N{White Heavy Check Mark}")
@@ -219,9 +236,7 @@ async def vote(ctx, id, vote=True):
     scope=girc_guild_id,
 )
 async def test(ctx):
-    raw_channel = await client._http.get_channel(sent_app_channel_id)
-    sent_app_channel = dc.Channel(**raw_channel, _client=client._http)
-    print(sent_app_channel.name)
+    print(ctx.data)
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
 async def get_role_from_name(role_name, guild_id = girc_guild_id):

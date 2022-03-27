@@ -20,9 +20,12 @@ admin_role_id=690970811410153493
 owner_role_id=690970413781614603
 everyone_role_id=690967067855421470
 builder_role_id=692408904059060234
+head_builder_role_id=692409029384994938
+pr_role_id=804648015176269854
+head_pr_user_id=<ID of a DC-User>
 
 host=<IP of Database-Server>
-db_user=<The user you want to acces the database with>
+db_user=<The user you want to access the database with>
 db_password=<The password for this user>
 db_name=<The name of the database>
 ```
