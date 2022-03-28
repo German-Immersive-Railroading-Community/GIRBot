@@ -1,6 +1,9 @@
 # GIRBot
 The DC Bot for GIRC.
 
+## NOTICE
+This currently only works with Python 3.8.6+ but <3.10. It is tested with 3.9.11.
+
 ## .env File
 Here is a template for a .env file. These are the variables you would need to specify:
 ```
@@ -17,9 +20,15 @@ admin_role_id=690970811410153493
 owner_role_id=690970413781614603
 everyone_role_id=690967067855421470
 builder_role_id=692408904059060234
+head_builder_role_id=692409029384994938
+pr_role_id=804648015176269854
+head_pr_user_id=<ID of a DC-User>
+
+count_head_dev=<How many head devs there are>
+count_head_builder=<How many head builder there are>
 
 host=<IP of Database-Server>
-db_user=<The user you want to acces the database with>
+db_user=<The user you want to access the database with>
 db_password=<The password for this user>
 db_name=<The name of the database>
 ```
