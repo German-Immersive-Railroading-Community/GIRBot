@@ -236,7 +236,6 @@ async def vote(ctx, id, vote):
 
     # Some functions so the part above looks better
     async def decline_app():
-        await app_message.add_reaction("\N{No Entry Sign}")
         await client._http.create_reaction(int(sent_app_channel.id), int(app_data["message_id"]), "\N{No Entry Sign}")
         member = await girc_guild.get_member(app_data["member_id"])
         await member.send(content=f"Hey you! Your application for the role {role_to_give.name} has been rejected! For further information, please contact an Administrator or Owner.")
