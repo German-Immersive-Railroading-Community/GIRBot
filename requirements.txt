@@ -11,7 +11,7 @@ idna==3.3
 multidict==6.0.2
 mysql-connector-python==8.0.28
 orjson==3.6.8
-protobuf==3.20.0
+protobuf==3.20.1
 pycodestyle==2.8.0
 python-decouple==3.6
 toml==0.10.2
