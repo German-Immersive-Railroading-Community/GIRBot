@@ -9,7 +9,7 @@ discord-py-interactions==4.1.0
 frozenlist==1.3.0
 idna==3.3
 multidict==6.0.2
-mysql-connector-python==8.0.28
+mysql-connector-python==8.0.29
 orjson==3.6.8
 protobuf==3.20.1
 pycodestyle==2.8.0
