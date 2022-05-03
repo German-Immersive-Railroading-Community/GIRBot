@@ -1,3 +1,5 @@
+from email.policy import default
+import json
 import logging
 import random as rd
 from os import name
@@ -23,6 +25,8 @@ logger.addHandler(handler)
 # Setting Variables
 client = dc.Client(token)
 db = Dbi()
+
+open("data.json", "a").close()
 
 # Standard shit
 
@@ -261,14 +265,32 @@ async def vote(ctx, id, vote):
     name="test",
     description="Command to test stuff",
     scope=girc_guild_id,
+    default_permission=False
 )
 async def test(ctx):
-    raw_girc_guild = await client._http.get_guild(girc_guild_id)
-    girc_guild = dc.Guild(**raw_girc_guild, _client=client._http)
-    role = await girc_guild.get_role(head_voters[709719558189088809][0])
-    print(role.name)
     await ctx.send(content="Nothing to see here!", ephemeral=True)
 
+@client.command(
+    name="devwish",
+    description="Make a wish to the devs",
+    scope=girc_guild_id,
+    default_permission=False,
+    options=[
+        dc.Option(
+            name="wish",
+            description="Was wünschst du dir?",
+            type=dc.OptionType.STRING,
+            required=True
+        )
+    ]
+)
+async def devwish(ctx, wish):
+    # This is shitty, but since it's only a joke/insider function, idc
+    with open("data.json", "r+") as df:
+        dfj = json.load(df)
+        dfj[int(len(dfj)) + 1] = wish
+        json.dump(dfj, df)
+    ctx.send(content="Dein Wunsch ist uns Befehl!", ephemeral=True)
 
 # Some self-written stuff
 
