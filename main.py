@@ -290,7 +290,7 @@ async def devwish(ctx, wish):
         dfj = json.load(df)
         dfj[int(len(dfj)) + 1] = wish
         json.dump(dfj, df)
-    ctx.send(content="Dein Wunsch ist uns Befehl!", ephemeral=True)
+    await ctx.send(content="Dein Wunsch ist uns Befehl!", ephemeral=True)
 
 # Some self-written stuff
 
