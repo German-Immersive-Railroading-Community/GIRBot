@@ -286,10 +286,12 @@ async def test(ctx):
 )
 async def devwish(ctx, wish):
     # This is shitty, but since it's only a joke/insider function, idc
-    with open("data.json", "r+") as df:
-        dfj = json.load(df)
-        dfj[int(len(dfj)) + 1] = wish
-        json.dump(dfj, df)
+    data = {}
+    for key, value in json.load(open("data.json")).items():
+        data[key] = value
+    data[int(len(data)) + 1] = wish
+    with open("data.json", "r+") as df: 
+        json.dump(data, df)
     await ctx.send(content="Dein Wunsch ist uns Befehl!", ephemeral=True)
 
 # Some self-written stuff
