@@ -43,7 +43,6 @@ async def on_ready():
     name="devset",
     description="Give someone the Dev-Role... Spooky",
     scope=girc_guild_id,
-    default_permission=False,
     options=[
         dc.Option(
             name="person",
@@ -172,7 +171,6 @@ async def application(ctx, role, text):
     name="vote",
     description="Vote for an application.",
     scope=girc_guild_id,
-    default_permission=True,
     options=[
         dc.Option(
             name="id",
@@ -264,8 +262,7 @@ async def vote(ctx, id, vote):
 @client.command(
     name="test",
     description="Command to test stuff",
-    scope=girc_guild_id,
-    default_permission=False
+    scope=girc_guild_id
 )
 async def test(ctx):
     await ctx.send(content="Nothing to see here!", ephemeral=True)
@@ -274,7 +271,6 @@ async def test(ctx):
     name="devwish",
     description="Make a wish to the devs",
     scope=girc_guild_id,
-    default_permission=False,
     options=[
         dc.Option(
             name="wish",
