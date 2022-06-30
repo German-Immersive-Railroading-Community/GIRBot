@@ -106,6 +106,8 @@ async def devset(ctx, person, language):
     ]
 )
 async def ideas_wishes(ctx, type, text):
+    await ctx.send(content=f"I'm sorry, but we can't take your {type} right now due to an acceptance stop.", ephemeral=True)
+    return
     idea_embed = dc.Embed(
         title=str(type),
         description=text,
