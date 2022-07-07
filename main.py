@@ -235,7 +235,6 @@ async def vote(ctx, id, vote):
     db.vote_for(id, str(ctx.author.id), vote)
     await ctx.send(content=f"You succesfully voted for {id}.")
     votes = db.check_vote(id)
-    app_message = await sent_app_channel.get_message(app_data["message_id"])
     role_to_give = await girc_guild.get_role(role_id=app_role_id)
 
     # Some functions so the part above looks better
@@ -254,7 +253,7 @@ async def vote(ctx, id, vote):
 
     # giving the user the role and user feedback
     if not int(app_role_id) in head_voters.keys():
-        await accept_app() if vote else decline_app()
+        await accept_app() if vote else await decline_app()
     elif votes["in_favor"] >= head_voters[app_role_id][1]//2:
         await accept_app()
     elif votes["against"] >= head_voters[app_role_id][1]//2:
@@ -297,7 +296,6 @@ async def devwish(ctx, wish):
 async def get_role_from_name(role_name, guild_id=girc_guild_id):
     """This is a helper function to get a Role Object based on the name of the role"""
     roles = await client._http.get_all_roles(guild_id)
-    i = 0
     for role in roles:
         if role["name"] == role_name:
             raw_girc_guild = await client._http.get_guild(girc_guild_id)
