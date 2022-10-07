@@ -15,4 +15,4 @@ protobuf==4.21.4
 pycodestyle==2.9.1
 python-decouple==3.6
 toml==0.10.2
-yarl==1.7.2
+yarl==1.8.1
