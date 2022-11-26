@@ -12,7 +12,7 @@ multidict==6.0.2
 mysql-connector-python==8.0.31
 orjson==3.7.11
 protobuf==4.21.4
-pycodestyle==2.9.1
+pycodestyle==2.10.0
 python-decouple==3.6
 toml==0.10.2
 yarl==1.8.1
