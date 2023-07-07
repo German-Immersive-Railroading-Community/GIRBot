@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 # Own
-crash_logs/
-.vscode/
-.log
+data.db*
 data.json
+config.ini
