@@ -6,7 +6,8 @@ import interactions as i
 
 config = cp.ConfigParser()
 config.read("config.ini")
-bot = i.Client(token=config["General"]["token"])
+bot = i.Client(token=config["General"]["token"],
+               delete_unused_application_cmds=True, disable_dm_commands=True)
 bot.load_extension("interactions.ext.jurigged")
 
 
