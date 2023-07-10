@@ -190,14 +190,10 @@ class ApplicationCommand(i.Extension):
         sub_cmd_name="enable",
         sub_cmd_description="Aktiviert eine Rolle für die Bewerbung",
     )
+    @i.auto_defer()
     async def role_enable(self, ctx: i.SlashContext):
-        # TODO Rework this (test it)
-        # Get all roles from the guild
-        # Check if they are already in the database > filter out
-        # If more then 25 roles are left, split them into multiple select menus (max. 3)
-        # Make function for all of them, since they have the same code > ctx as argument
         options, selectmenus = [], []
-        selectmenu_count = 1
+        selectmenu_count = 0
         for role in ctx.guild.roles:
             self.cur.execute(
                 "SELECT role_id FROM roles WHERE role_id = ?", (int(role.id),))
@@ -208,20 +204,26 @@ class ApplicationCommand(i.Extension):
                 value=str(role.id)
             ))
             if len(options) == 25:
-                role_select_menu = i.StringSelectMenu(
-                    custom_id=f"role_enable_selectmenu{selectmenu_count}",
+                selectmenus.append(i.StringSelectMenu(
+                    custom_id=f"role_enable_selectmenu{selectmenu_count + 1}",
                     placeholder="Wähle eine Rolle aus",
                     max_values=len(options),
                     *options
-                )
-                selectmenus.append(role_select_menu)
+                ))
                 options = []
                 selectmenu_count += 1
-                if selectmenu_count == 4:
+                if selectmenu_count == 3:
                     break
-        actionrow = i.ActionRow(*selectmenus)
-        await ctx.send("Wähle die Rollen aus, die aktiviert werden sollen.",
-                       components=actionrow, ephemeral=True)
+        if len(options) > 0 and selectmenu_count < 3:
+            selectmenus.append(i.StringSelectMenu(
+                custom_id=f"role_enable_selectmenu{selectmenu_count + 1}",
+                placeholder="Wähle eine Rolle aus",
+                max_values=len(options),
+                *options
+            ))
+        await ctx.send("Wähle die Rollen aus, die aktiviert werden sollen.")
+        for selectmenu in selectmenus:
+            await ctx.channel.send(components=selectmenu, silent=True)
 
     @roles.subcommand(
         sub_cmd_name="disable",
@@ -290,19 +292,19 @@ class ApplicationCommand(i.Extension):
     @i.auto_defer()
     async def role_enable_callback1(self, ctx: i.ComponentContext):
         await ctx.send("Die Rollen werden aktiviert.", ephemeral=True)
-        self._enable_roles(ctx)
+        await self._enable_roles(ctx)
 
     @i.component_callback("role_enable_selectmenu2")
     @i.auto_defer()
     async def role_enable_callback2(self, ctx: i.ComponentContext):
         await ctx.send("Die Rollen werden aktiviert.", ephemeral=True)
-        self._enable_roles(ctx)
+        await self._enable_roles(ctx)
 
     @i.component_callback("role_enable_selectmenu3")
     @i.auto_defer()
     async def role_enable_callback3(self, ctx: i.ComponentContext):
         await ctx.send("Die Rollen werden aktiviert.", ephemeral=True)
-        self._enable_roles(ctx)
+        await self._enable_roles(ctx)
 
     @i.component_callback("role_disable_selectmenu")
     @i.auto_defer()
