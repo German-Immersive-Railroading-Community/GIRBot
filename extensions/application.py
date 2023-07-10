@@ -51,6 +51,21 @@ class ApplicationCommand(i.Extension):
         await info_message.edit(components=[role_info_select])
         await application_message.edit(components=[application_select])
 
+    async def _enable_roles(self, ctx: i.ComponentContext):
+        for role in ctx.values:
+            role = await ctx.guild.fetch_role(int(role))
+            self.cur.execute(
+                "SELECT role_id FROM roles WHERE role_id = ?", (int(role.id),))
+            if self.cur.fetchone() is None:
+                self.cur.execute("INSERT INTO roles VALUES (?, ?, ?, ?, ?)",
+                                 (int(role.id), role.name, "", "", True))
+                self.con.commit()
+            else:
+                self.cur.execute(
+                    "UPDATE roles SET enabled = 1 WHERE role_id = ?", (int(role.id),))
+                self.con.commit()
+        await self.update_menus(ctx.guild)
+
     @i.slash_command(
         name="application",
         description="Basis Command für die Bewerbung",
@@ -176,12 +191,34 @@ class ApplicationCommand(i.Extension):
         sub_cmd_description="Aktiviert eine Rolle für die Bewerbung",
     )
     async def role_enable(self, ctx: i.SlashContext):
-        role_select_menu = i.RoleSelectMenu(
-            custom_id="role_enable_selectmenu",
-            placeholder="Wähle eine Rolle aus",
-            min_values=1,
-            max_values=25
-        )
+        # TODO Rework this (test it)
+        # Get all roles from the guild
+        # Check if they are already in the database > filter out
+        # If more then 25 roles are left, split them into multiple select menus (max. 3)
+        # Make function for all of them, since they have the same code > ctx as argument
+        options, selectmenus = [], []
+        selectmenu_count = 1
+        for role in ctx.guild.roles:
+            self.cur.execute(
+                "SELECT role_id FROM roles WHERE role_id = ?", (int(role.id),))
+            if self.cur.fetchone() is not None:
+                continue
+            options.append(i.StringSelectOption(
+                label=role.name,
+                value=str(role.id)
+            ))
+            if len(options) == 25:
+                role_select_menu = i.StringSelectMenu(
+                    custom_id=f"role_enable_selectmenu{selectmenu_count}",
+                    placeholder="Wähle eine Rolle aus",
+                    max_values=len(options),
+                    *options
+                )
+                selectmenus.append(role_select_menu)
+                options = []
+                selectmenu_count += 1
+                if selectmenu_count == 4:
+                    break
         await ctx.send("Wähle die Rollen aus, die aktiviert werden sollen.",
                        components=role_select_menu, ephemeral=True)
 
@@ -248,21 +285,23 @@ class ApplicationCommand(i.Extension):
         await ctx.send("Wähle die Rollen aus, die gelöscht werden sollen.",
                        components=role_select_menu, ephemeral=True)
 
-    @i.component_callback("role_enable_selectmenu")
+    @i.component_callback("role_enable_selectmenu1")
     @i.auto_defer()
-    async def role_enable_callback(self, ctx: i.ComponentContext):
-        for role in ctx.values:
-            self.cur.execute("SELECT * FROM roles WHERE role_id = ?", (int(role.id),))
-            if self.cur.fetchone() is None:
-                self.cur.execute("INSERT INTO roles VALUES (?, ?, ?, ?, ?)",
-                                 (int(role.id), role.name, "", "", True))
-                self.con.commit()
-            else:
-                self.cur.execute(
-                    "UPDATE roles SET enabled = 1 WHERE role_id = ?", (int(role.id),))
-                self.con.commit()
-        await self.update_menus(ctx.guild)
-        await ctx.edit_origin(content="Rollen erfolgreich aktiviert!", components=[])
+    async def role_enable_callback1(self, ctx: i.ComponentContext):
+        await ctx.send("Die Rollen werden aktiviert.", ephemeral=True)
+        self._enable_roles(ctx)
+
+    @i.component_callback("role_enable_selectmenu2")
+    @i.auto_defer()
+    async def role_enable_callback2(self, ctx: i.ComponentContext):
+        await ctx.send("Die Rollen werden aktiviert.", ephemeral=True)
+        self._enable_roles(ctx)
+
+    @i.component_callback("role_enable_selectmenu3")
+    @i.auto_defer()
+    async def role_enable_callback3(self, ctx: i.ComponentContext):
+        await ctx.send("Die Rollen werden aktiviert.", ephemeral=True)
+        self._enable_roles(ctx)
 
     @i.component_callback("role_disable_selectmenu")
     @i.auto_defer()
