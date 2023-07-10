@@ -219,8 +219,9 @@ class ApplicationCommand(i.Extension):
                 selectmenu_count += 1
                 if selectmenu_count == 4:
                     break
+        actionrow = i.ActionRow(*selectmenus)
         await ctx.send("Wähle die Rollen aus, die aktiviert werden sollen.",
-                       components=role_select_menu, ephemeral=True)
+                       components=actionrow, ephemeral=True)
 
     @roles.subcommand(
         sub_cmd_name="disable",
