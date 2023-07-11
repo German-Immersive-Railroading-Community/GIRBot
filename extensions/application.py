@@ -27,6 +27,10 @@ class ApplicationCommand(i.Extension):
         except KeyError:
             return
         info_options = []
+        info_options.append(i.StringSelectOption(
+            label="Kurzbeschreibung",
+            value="Kurzbeschreibung"
+        ))
         self.cur.execute("SELECT role_id, name FROM roles")
         for role_id, name in self.cur.fetchall():
             info_options.append(i.StringSelectOption(
