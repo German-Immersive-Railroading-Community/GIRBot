@@ -6,8 +6,7 @@ import interactions as i
 
 config = cp.ConfigParser()
 config.read("config.ini")
-bot = i.Client(token=config["General"]["token"],
-               delete_unused_application_cmds=True, disable_dm_commands=True)
+bot = i.Client(token=config["General"]["token"], disable_dm_commands=True)
 if config["General"]["sentry_token"] != "":
     bot.load_extension("interactions.ext.sentry",
                        token=config["General"]["sentry_token"])
@@ -37,5 +36,6 @@ async def on_startup():
     print("Bot started.")
 
 bot.load_extension("extensions.application")
+bot.load_extension("extensions.mod")
 
 bot.start()
