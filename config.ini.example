@@ -3,6 +3,8 @@
 token = lkjsdhgiolhO98drfuzg8eortz9v9zatb8nzß
 # The IDs of the servers where the commands should be available
 scope_ids=123456789012345678,123456789012345678
+# Token for a Sentry instance; leave empty to disable
+sentry_token = lkjsdhgiolhO98drfuzg8eortz9v9zatb8nzß
 
 [Channels]
 # The ID of the channel where the applications should be sent
