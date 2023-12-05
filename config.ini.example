@@ -9,3 +9,6 @@ sentry_token = lkjsdhgiolhO98drfuzg8eortz9v9zatb8nzß
 [Channels]
 # The ID of the channel where the applications should be sent
 send_application_channel_id = 123456789012345678
+
+[Mod]
+log_channel_id = 123456789012345678

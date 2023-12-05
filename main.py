@@ -6,7 +6,9 @@ import interactions as i
 
 config = cp.ConfigParser()
 config.read("config.ini")
-bot = i.Client(token=config["General"]["token"], disable_dm_commands=True)
+bot = i.Client(token=config["General"]["token"],
+               disable_dm_commands=True,
+               intents=i.Intents.DEFAULT | i.Intents.MESSAGE_CONTENT)
 if config["General"]["sentry_token"] != "":
     bot.load_extension("interactions.ext.sentry",
                        token=config["General"]["sentry_token"])
