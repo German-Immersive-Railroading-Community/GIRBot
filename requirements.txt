@@ -11,7 +11,7 @@ discord-typings==0.7.0
 emoji==2.8.0
 frozenlist==1.4.0
 idna==3.6
-jinxed==1.2.0
+jinxed==1.2.1
 jurigged==0.5.7
 multidict==6.0.4
 ovld==0.3.2
