@@ -3,6 +3,7 @@ import time
 
 import interactions as i
 from interactions.api.events import MessageDelete, MessageUpdate
+from interactions.models.discord import AuditLogEventType
 
 scope_ids = []
 
@@ -21,12 +22,25 @@ class ModCommand(i.Extension):
 
     @i.listen(MessageDelete)
     async def on_message_delete(self, event: MessageDelete):
+        audit_log = await event.message.guild.fetch_audit_log(action_type=AuditLogEventType.MESSAGE_DELETE, limit=3)
+        deleted_by = ""
+        for entry in audit_log.entries:
+            try:
+                if int(entry.user_id) == int(event.message.author.id):
+                    break
+                elif int(entry.target_id) == int(event.message.author.id):
+                    member = await event.message.guild.fetch_member(entry.user_id)
+                    deleted_by = " von " + member.mention
+                    break
+            except ValueError:
+                continue
+
         formatted_time = time.strftime("%d.%m.%Y %H:%M:%S", time.localtime())
-        message_author_name = event.message.author.display_name
+        message_author_mention = event.message.author.mention
         log_channel = await self.client.fetch_channel(self.log_channel_id)
         embed = i.Embed(
-            title=message_author_name,
-            description=f"Nachricht in <#{str(event.message.channel.id)}> gelöscht.",
+            title=message_author_mention,
+            description=f"Nachricht in <#{str(event.message.channel.id)}>{deleted_by} gelöscht.",
             color=0xFF0000,
             footer=i.EmbedFooter(text=formatted_time)
         )

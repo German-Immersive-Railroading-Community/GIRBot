@@ -40,4 +40,12 @@ async def on_startup():
 bot.load_extension("extensions.application")
 bot.load_extension("extensions.mod")
 
+
+@i.slash_command(
+    name="test",
+    description="A test command to test stuff.",
+)
+async def test(ctx: i.SlashContext):
+    await ctx.send("Test worked!")
+
 bot.start()
