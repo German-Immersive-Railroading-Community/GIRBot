@@ -49,7 +49,8 @@ class ApplicationCommand(i.Extension):
                 label=name,
                 value=str(role_id)
             ))
-        application_select: i.StringSelectMenu = application_message.components[0].components[0]
+        application_select: i.StringSelectMenu = application_message.components[
+            0].components[0]
         application_select.options = options
         application_select.max_values = len(options)
         await info_message.edit(components=[role_info_select])
@@ -161,7 +162,8 @@ class ApplicationCommand(i.Extension):
         info_channel = await ctx.guild.fetch_channel(data["channel_id"])
         application_message = await info_channel.fetch_message(data["application_message_id"])
 
-        application_select: i.StringSelectMenu = application_message.components[0].components[0]
+        application_select: i.StringSelectMenu = application_message.components[
+            0].components[0]
         application_select.disabled = False
         await application_message.edit(components=[application_select])
         await ctx.send("Bewerbungen sind jetzt erlaubt!", ephemeral=True)
@@ -177,7 +179,8 @@ class ApplicationCommand(i.Extension):
         info_channel = await ctx.guild.fetch_channel(data["channel_id"])
         application_message = await info_channel.fetch_message(data["application_message_id"])
 
-        application_select: i.StringSelectMenu = application_message.components[0].components[0]
+        application_select: i.StringSelectMenu = application_message.components[
+            0].components[0]
         application_select.disabled = True
         await application_message.edit(components=[application_select])
         await ctx.send("Bewerbungen sind jetzt verboten!", ephemeral=True)
@@ -367,7 +370,8 @@ class ApplicationCommand(i.Extension):
     @i.auto_defer()
     async def role_delete_callback(self, ctx: i.ComponentContext):
         for role in ctx.values:
-            self.cur.execute("DELETE FROM roles WHERE role_id = ?", (int(role),))
+            self.cur.execute(
+                "DELETE FROM roles WHERE role_id = ?", (int(role),))
             self.con.commit()
         await self.update_menus(ctx.guild)
         await ctx.edit_origin(content="Rollen erfolgreich gelöscht!", components=[])
@@ -375,7 +379,7 @@ class ApplicationCommand(i.Extension):
     @i.component_callback("role_info_selectmenu")
     @i.auto_defer()
     async def role_info_callback(self, ctx: i.ComponentContext):
-        if ctx.values[0] == "Kurzbeschreibung":
+        if "Kurzbeschreibung" in ctx.values:
             self.cur.execute("SELECT role_id, short_description FROM roles")
             embeds = []
             for role_id, short_description in self.cur.fetchall():
@@ -387,7 +391,8 @@ class ApplicationCommand(i.Extension):
                     thumbnail=i.EmbedAttachment(
                         url="https://cdn.discordapp.com/attachments/923199431447289916/923200094264774676/LogoDiscord.png"),
                 ))
-            paginator = Paginator.create_from_embeds(self.bot, *embeds, timeout=1800)
+            paginator = Paginator.create_from_embeds(
+                self.bot, *embeds, timeout=1800)
             paginator.show_select_menu = True
             await paginator.send(ctx, **{"ephemeral": True})
         elif len(ctx.values) == 1:
@@ -415,7 +420,8 @@ class ApplicationCommand(i.Extension):
                     thumbnail=i.EmbedAttachment(
                         url="https://cdn.discordapp.com/attachments/923199431447289916/923200094264774676/LogoDiscord.png"),
                 ))
-            paginator = Paginator.create_from_embeds(self.bot, *embeds, timeout=1800)
+            paginator = Paginator.create_from_embeds(
+                self.bot, *embeds, timeout=1800)
             paginator.show_select_menu = True
             await paginator.send(ctx, **{"ephemeral": True})
 
