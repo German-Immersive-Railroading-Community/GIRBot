@@ -391,10 +391,14 @@ class ApplicationCommand(i.Extension):
                     thumbnail=i.EmbedAttachment(
                         url="https://cdn.discordapp.com/attachments/923199431447289916/923200094264774676/LogoDiscord.png"),
                 ))
+            if not embeds:
+                await ctx.send("Es wurden keine Rolleninformationen gefunden.", ephemeral=True)
+                return
+
             paginator = Paginator.create_from_embeds(
                 self.bot, *embeds, timeout=1800)
             paginator.show_select_menu = True
-            await paginator.send(ctx, **{"ephemeral": True})
+            await paginator.send(ctx, ephemeral=True)
         elif len(ctx.values) == 1:
             self.cur.execute(
                 "SELECT long_description FROM roles WHERE role_id = ?", (int(ctx.values[0]),))
@@ -420,10 +424,14 @@ class ApplicationCommand(i.Extension):
                     thumbnail=i.EmbedAttachment(
                         url="https://cdn.discordapp.com/attachments/923199431447289916/923200094264774676/LogoDiscord.png"),
                 ))
+            if not embeds:
+                await ctx.send("Es wurden keine Rolleninformationen gefunden.", ephemeral=True)
+                return
+
             paginator = Paginator.create_from_embeds(
-                self.bot, *embeds, timeout=1800)
+            self.bot, *embeds, timeout=1800)
             paginator.show_select_menu = True
-            await paginator.send(ctx, **{"ephemeral": True})
+            await paginator.send(ctx, ephemeral=True)
 
     @i.component_callback("application_selectmenu")
     async def role_application_callback(self, ctx: i.ComponentContext):

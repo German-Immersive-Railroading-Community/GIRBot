@@ -1,8 +1,18 @@
 import configparser as cp
 import sqlite3 as sql
 from os.path import exists
+import logging
+import sys
 
 import interactions as i
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+    datefmt="%d.%m.%Y %H:%M:%S",
+    stream=sys.stdout,
+    force=True
+)
 
 config = cp.ConfigParser()
 config.read("config.ini")
@@ -35,7 +45,7 @@ setup_save()
 
 @i.listen()
 async def on_startup():
-    print("Bot started.")
+    logging.getLogger("bot").info("Bot gestartet.")
 
 bot.load_extension("extensions.application")
 bot.load_extension("extensions.mod")
